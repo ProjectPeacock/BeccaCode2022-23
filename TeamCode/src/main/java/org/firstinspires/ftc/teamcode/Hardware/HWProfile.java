@@ -35,9 +35,10 @@ public class HWProfile {
     public DcMotor  motorLR  = null;
     public DcMotor  motorRF     = null;
     public DcMotor  motorRR    = null;
-    public DcMotor motorLift = null;
+    public DcMotorEx motorLift1 = null;
+    public DcMotorEx motorLift2 = null;
     public BNO055IMU imu = null;
-    public Servo servoGrabber = null;
+    //public Servo servoGrabber = null;
 
 
     /* local OpMode members. */
@@ -86,15 +87,22 @@ public class HWProfile {
         motorRR.setPower(0);
 
         //lift motor init
-        motorLift = hwMap.get(DcMotor.class, "motorLift");
-        motorLift.setDirection(DcMotor.Direction.REVERSE);
-        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLift.setTargetPosition(0);
-        motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLift.setPower(0);
+        motorLift1 = hwMap.get(DcMotorEx.class, "motorLift1");
+        motorLift1.setDirection(DcMotor.Direction.REVERSE);
+        motorLift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift1.setTargetPosition(0);
+        motorLift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLift1.setPower(0);
+
+        motorLift2 = hwMap.get(DcMotorEx.class, "motorLift2");
+        motorLift2.setDirection(DcMotor.Direction.REVERSE);
+        motorLift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift2.setTargetPosition(0);
+        motorLift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLift2.setPower(0);
 
         //init servos
-        servoGrabber = hwMap.get(Servo.class, "servoGrabber");
+        //servoGrabber = hwMap.get(Servo.class, "servoGrabber");
 
         //init imu
         imu = hwMap.get(BNO055IMU.class, "imu");

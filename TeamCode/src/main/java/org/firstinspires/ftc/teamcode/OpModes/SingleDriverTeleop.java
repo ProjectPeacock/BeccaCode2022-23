@@ -51,13 +51,13 @@ public class SingleDriverTeleop extends LinearOpMode {
              ****** Mecanum Drive Control section ******
              *******************************************/
             if (fieldCentric) {             // verify that the user hasn't disabled field centric drive
-                theta = robot.imu.getAngularOrientation().firstAngle - 90;
+                theta = robot.imu.getAngularOrientation().firstAngle - 270;
             } else {
                 theta = 0;      // do not adjust for the angular position of the robot
             }
 
             robotAngle = Math.atan2(gamepad1.left_stick_y, (-gamepad1.left_stick_x)) - Math.PI / 4;
-            rightX = gamepad1.right_stick_x*0.5;
+            rightX = gamepad1.right_stick_x*0.75;
             rightY = gamepad1.right_stick_y;
             r = -Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
 
@@ -87,12 +87,17 @@ public class SingleDriverTeleop extends LinearOpMode {
                 buttonPress = currentTime.time();
             }   // end if (gamepad1.x && ...)
 
-            if (gamepad1.right_trigger > 0.1&&robot.motorLift.getCurrentPosition()<=robot.MAX_LIFT_VALUE) {
-                robot.motorLift.setPower(gamepad1.right_trigger);
+            if (gamepad1.right_trigger > 0.1&&robot.motorLift1.getCurrentPosition()<=robot.MAX_LIFT_VALUE) {
+                robot.motorLift1.setPower(gamepad1.right_trigger);
+                robot.motorLift2.setPower(gamepad1.right_trigger);
             } else if (gamepad1.left_trigger > 0.1) {
 //            } else if (gamepad2.left_trigger > 0.1&&robot.motorLift.getCurrentPosition()>=robot.liftMin) {
-                robot.motorLift.setPower(-gamepad1.left_trigger);
-            } else robot.motorLift.setPower(0);
+                robot.motorLift1.setPower(-gamepad1.left_trigger);
+                robot.motorLift2.setPower(-gamepad1.right_trigger);
+            } else {
+                robot.motorLift1.setPower(0);
+                robot.motorLift2.setPower(0);
+            }
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
                 clawOpen=!clawOpen;
@@ -100,14 +105,14 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
 
             if (clawOpen) {
-                robot.servoGrabber.setPosition(robot.CLAW_OPEN);
+                //robot.servoGrabber.setPosition(robot.CLAW_OPEN);
             } else {
-                robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
+                //robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
 
 
             // Provide user feedback
-            telemetry.addData("lift position:", robot.motorLift.getCurrentPosition());
+            telemetry.addData("lift position:", robot.motorLift1.getCurrentPosition());
             telemetry.addData("power",power);
             telemetry.addData("V1 = ", v1);
             telemetry.addData("V2 = ", v2);
