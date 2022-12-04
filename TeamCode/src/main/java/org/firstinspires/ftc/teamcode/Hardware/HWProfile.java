@@ -38,7 +38,7 @@ public class HWProfile {
     public DcMotorEx motorLift1 = null;
     public DcMotorEx motorLift2 = null;
     public BNO055IMU imu = null;
-    //public Servo servoGrabber = null;
+    public Servo servoGrabber = null;
 
 
     /* local OpMode members. */
@@ -102,7 +102,7 @@ public class HWProfile {
         motorLift2.setPower(0);
 
         //init servos
-        //servoGrabber = hwMap.get(Servo.class, "servoGrabber");
+        servoGrabber = hwMap.get(Servo.class, "servoGrabber");
 
         //init imu
         imu = hwMap.get(BNO055IMU.class, "imu");
