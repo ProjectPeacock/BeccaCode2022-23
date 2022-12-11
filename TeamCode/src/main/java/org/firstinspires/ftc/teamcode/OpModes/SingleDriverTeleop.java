@@ -23,31 +23,29 @@ public class SingleDriverTeleop extends LinearOpMode {
         double rightX, rightY;
         boolean TSEFlag = false;
         boolean fieldCentric = true;
-        int targetPosition = 0;
-        double cupPosition = 0;
 
         ElapsedTime currentTime = new ElapsedTime();
         double buttonPress = currentTime.time();
 
         robot.init(hardwareMap);
+        robot.motorLiftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorLiftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
-        boolean shippingElement = false;
-        boolean armDeployed = false;
-
         boolean clawOpen = true;
-        robot.motorLift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double liftPower=0;
         waitForStart();
 
         while (opModeIsActive()) {
+            /*
             if(gamepad1.right_trigger>0.1&&gamepad1.right_trigger<0.8) {
                 power*=0.5;
             }else if(gamepad1.right_trigger<0.1){
                 power=robot.MAX_DRIVE_POWER;
             }
+            */
 
             /*******************************************
              ****** Mecanum Drive Control section ******
@@ -91,17 +89,25 @@ public class SingleDriverTeleop extends LinearOpMode {
             }   // end if (gamepad1.x && ...)
             */
 
-
+/*
             if (gamepad1.right_trigger > 0.1) {
-                robot.motorLift1.setPower(gamepad1.right_trigger);
-                robot.motorLift2.setPower(gamepad1.right_trigger);
+                robot.motorLiftFront.setPower(gamepad1.right_trigger);
+                robot.motorLiftRear.setPower(gamepad1.right_trigger);
             } else if (gamepad1.left_trigger > 0.1) {
 //            } else if (gamepad2.left_trigger > 0.1&&robot.motorLift.getCurrentPosition()>=robot.liftMin) {
-                robot.motorLift1.setPower(-gamepad1.left_trigger);
-                robot.motorLift2.setPower(-gamepad1.right_trigger);
+                robot.motorLiftFront.setPower(-gamepad1.left_trigger);
+                robot.motorLiftRear.setPower(-gamepad1.right_trigger);
             } else {
-                robot.motorLift1.setPower(0);
-                robot.motorLift2.setPower(0);
+                robot.motorLiftFront.setPower(0);
+                robot.motorLiftRear.setPower(0);
+            }
+            */
+            if(gamepad1.right_trigger>0.1){
+                liftPower=gamepad1.right_trigger;
+            }else if(gamepad1.left_trigger>0.1){
+                liftPower=-gamepad1.left_trigger;
+            }else{
+                liftPower=0;
             }
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
@@ -114,10 +120,26 @@ public class SingleDriverTeleop extends LinearOpMode {
             } else {
                 robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
+            robot.motorLiftFront.setPower(liftPower);
+            robot.motorLiftRear.setPower(liftPower);
+            /* RUN_TO_POSITION test
+            robot.motorLiftFront.setPower(0.3);
+            robot.motorLiftRear.setPower(0.3);
+            if(gamepad1.dpad_up) {
+                robot.motorLiftFront.setTargetPosition(100);
+                robot.motorLiftRear.setTargetPosition(100);
+            }else{
+                robot.motorLiftFront.setTargetPosition(0);
+                robot.motorLiftRear.setTargetPosition(0);
+            }
+
+             */
 
 
             // Provide user feedback
-            telemetry.addData("lift position:", robot.motorLift1.getCurrentPosition());
+            telemetry.addData("lift 1 position = ", robot.motorLiftFront.getCurrentPosition());
+            telemetry.addData("lift 2 position = ", robot.motorLiftRear.getCurrentPosition());
+            telemetry.addData("power = ",power);
             telemetry.addData("power",power);
             telemetry.addData("V1 = ", v1);
             telemetry.addData("V2 = ", v2);
