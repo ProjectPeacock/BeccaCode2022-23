@@ -11,12 +11,12 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "Lift Test", group = "Competition")
 
 public class LiftTest extends LinearOpMode {
+    public DcMotorEx motorLiftFront = null;
+    public DcMotorEx motorLiftRear = null;
+    public HardwareMap hwMap           =  null;
 
     @Override
     public void runOpMode() {
-        DcMotorEx motorLiftFront = null;
-        DcMotorEx motorLiftRear = null;
-        HardwareMap hwMap           =  null;
 
         //lift motor init
         motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
