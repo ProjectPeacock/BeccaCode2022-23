@@ -13,13 +13,12 @@ import com.qualcomm.robotcore.util.Range;
 public class LiftTest extends LinearOpMode {
     public DcMotorEx motorLiftFront = null;
     public DcMotorEx motorLiftRear = null;
-    public HardwareMap hwMap           =  null;
 
     @Override
     public void runOpMode() {
 
         //lift motor init
-        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
+        motorLiftFront = hardwareMap.get(DcMotorEx.class, "motorLiftFront");
         motorLiftFront.setDirection(DcMotorEx.Direction.FORWARD);
 //        motorLiftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorLiftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -27,7 +26,7 @@ public class LiftTest extends LinearOpMode {
         motorLiftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftFront.setPower(0);
 
-        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
+        motorLiftRear = hardwareMap.get(DcMotorEx.class, "motorLiftRear");
         motorLiftRear.setDirection(DcMotorEx.Direction.FORWARD);
 //        motorLiftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorLiftRear.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
