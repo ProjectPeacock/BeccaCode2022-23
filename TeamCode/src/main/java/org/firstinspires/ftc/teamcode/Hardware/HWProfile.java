@@ -87,7 +87,7 @@ public class HWProfile {
         motorRR.setPower(0);
 
         //lift motor init
-        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftRear");
+        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
         motorLiftFront.setDirection(DcMotorEx.Direction.FORWARD);
 //        motorLiftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorLiftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -95,7 +95,7 @@ public class HWProfile {
         motorLiftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftFront.setPower(0);
 
-        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftFront");
+        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
         motorLiftRear.setDirection(DcMotorEx.Direction.FORWARD);
 //        motorLiftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorLiftRear.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
