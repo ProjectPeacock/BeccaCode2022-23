@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.Libs.DriveClass;
 
 @TeleOp(name = "Broken Bot", group = "Competition")
 
@@ -23,11 +24,15 @@ public class BrokenBot extends LinearOpMode {
         double rightX, rightY;
         boolean fieldCentric = false;
         int liftPosition = 0;
+        LinearOpMode opMode = this;
 
         ElapsedTime currentTime = new ElapsedTime();
         double buttonPress = currentTime.time();
 
         robot.init(hardwareMap);
+
+        DriveClass drive = new DriveClass(robot, opMode);
+
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -101,6 +106,22 @@ public class BrokenBot extends LinearOpMode {
             // move lift to target position
             robot.motorLiftFront.setTargetPosition(liftPosition);
             robot.motorLiftFront.setPower(1);
+
+            if(gamepad2.a){
+                drive.liftTest(0);
+            }
+
+            if(gamepad2.b){
+                drive.liftTest(robot.JUNCTION_LOWER);
+            }
+
+            if(gamepad2.x){
+                drive.liftTest(robot.JUNCTION_MID);
+            }
+
+            if(gamepad2.y){
+                drive.liftTest(robot.JUNCTION_HIGH);
+            }
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
                 clawOpen=!clawOpen;
