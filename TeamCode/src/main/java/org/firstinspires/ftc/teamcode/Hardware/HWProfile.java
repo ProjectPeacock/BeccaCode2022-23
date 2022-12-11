@@ -36,8 +36,8 @@ public class HWProfile {
     public DcMotor  motorLR  = null;
     public DcMotor  motorRF     = null;
     public DcMotor  motorRR    = null;
-    public DcMotor motorLiftFront = null;
-    public DcMotor motorLiftRear = null;
+    public DcMotorEx motorLiftFront = null;
+    public DcMotorEx motorLiftRear = null;
     public BNO055IMU imu = null;
     public Servo servoGrabber = null;
 
@@ -88,19 +88,19 @@ public class HWProfile {
 
         //lift motor init
         motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftRear");
-        motorLiftFront.setDirection(DcMotor.Direction.FORWARD);
-        motorLiftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLiftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLiftFront.setDirection(DcMotorEx.Direction.FORWARD);
+        motorLiftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motorLiftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motorLiftFront.setTargetPosition(0);
-        motorLiftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLiftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftFront.setPower(0);
 
         motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftFront");
-        motorLiftRear.setDirection(DcMotor.Direction.FORWARD);
-        motorLiftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLiftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLiftRear.setDirection(DcMotorEx.Direction.FORWARD);
+        motorLiftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motorLiftRear.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motorLiftRear.setTargetPosition(0);
-        motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLiftRear.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftRear.setPower(0);
 
         //init servos
