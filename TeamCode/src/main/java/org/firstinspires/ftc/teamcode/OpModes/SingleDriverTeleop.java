@@ -21,33 +21,33 @@ public class SingleDriverTeleop extends LinearOpMode {
         double r;
         double power = robot.MAX_DRIVE_POWER;
         double rightX, rightY;
+        boolean TSEFlag = false;
         boolean fieldCentric = true;
+        int targetPosition = 0;
+        double cupPosition = 0;
 
         ElapsedTime currentTime = new ElapsedTime();
         double buttonPress = currentTime.time();
 
         robot.init(hardwareMap);
-        robot.motorLiftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.motorLiftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
+        boolean shippingElement = false;
+        boolean armDeployed = false;
+
         boolean clawOpen = true;
-
-
-        double liftPower=0;
-
+        robot.motorLift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
 
         while (opModeIsActive()) {
-            /*
             if(gamepad1.right_trigger>0.1&&gamepad1.right_trigger<0.8) {
                 power*=0.5;
             }else if(gamepad1.right_trigger<0.1){
                 power=robot.MAX_DRIVE_POWER;
             }
-             */
 
             /*******************************************
              ****** Mecanum Drive Control section ******
@@ -73,25 +73,35 @@ public class SingleDriverTeleop extends LinearOpMode {
             robot.motorLR.setPower(com.qualcomm.robotcore.util.Range.clip((v3), -power, power));
             robot.motorRR.setPower(com.qualcomm.robotcore.util.Range.clip((v4), -power, power));
 
+            /*if (gamepad1.right_trigger > 0.1&&power < 1) {
+                power +=.05;
+            } else if (gamepad1.left_trigger > 0.1&&power > 0) {
+                power -= 0.05;
+            } */
+
+            // Control which direction is forward and which is backward from the driver POV
             /*
+            if (gamepad1.y && (currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT) {
+                if (theta2 == 180) {
+                    theta2 = 0;
+                } else {
+                    theta2 = 180;
+                }
+                buttonPress = currentTime.time();
+            }   // end if (gamepad1.x && ...)
+            */
+
+
             if (gamepad1.right_trigger > 0.1) {
                 robot.motorLift1.setPower(gamepad1.right_trigger);
                 robot.motorLift2.setPower(gamepad1.right_trigger);
             } else if (gamepad1.left_trigger > 0.1) {
+//            } else if (gamepad2.left_trigger > 0.1&&robot.motorLift.getCurrentPosition()>=robot.liftMin) {
                 robot.motorLift1.setPower(-gamepad1.left_trigger);
-                robot.motorLift2.setPower(-gamepad1.left_trigger);
+                robot.motorLift2.setPower(-gamepad1.right_trigger);
             } else {
                 robot.motorLift1.setPower(0);
                 robot.motorLift2.setPower(0);
-            }
-             */
-
-            if(gamepad1.right_trigger>0.1){
-                liftPower=gamepad1.right_trigger;
-            }else if(gamepad1.left_trigger>0.1){
-                liftPower=-gamepad1.left_trigger;
-            }else{
-                liftPower=0;
             }
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
@@ -104,24 +114,11 @@ public class SingleDriverTeleop extends LinearOpMode {
             } else {
                 robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
-            robot.motorLiftFront.setPower(liftPower);
-            robot.motorLiftRear.setPower(liftPower);
-            /* RUN_TO_POSITION test
-            robot.motorLiftFront.setPower(0.3);
-            robot.motorLiftRear.setPower(0.3);
-            if(gamepad1.dpad_up) {
-                robot.motorLiftFront.setTargetPosition(100);
-                robot.motorLiftRear.setTargetPosition(100);
-            }else{
-                robot.motorLiftFront.setTargetPosition(0);
-                robot.motorLiftRear.setTargetPosition(0);
-            }
 
-             */
+
             // Provide user feedback
-            telemetry.addData("lift 1 position = ", robot.motorLiftFront.getCurrentPosition());
-            telemetry.addData("lift 2 position = ", robot.motorLiftRear.getCurrentPosition());
-            telemetry.addData("power = ",power);
+            telemetry.addData("lift position:", robot.motorLift1.getCurrentPosition());
+            telemetry.addData("power",power);
             telemetry.addData("V1 = ", v1);
             telemetry.addData("V2 = ", v2);
             telemetry.addData("V3 = ", v3);
@@ -140,9 +137,9 @@ public class SingleDriverTeleop extends LinearOpMode {
             telemetry.addData("Right Stick Y = ", gamepad1.right_stick_y);
             telemetry.addData("Theta = ", theta);
             telemetry.addData("Theta2 = ", theta);
-            telemetry.addData("IMU Value = ", theta);
+            telemetry.addData("IMU Value: ", theta);
             telemetry.update();
 
         }   // end of while(opModeIsActive)
     }   // end of runOpMode()
-}       // end of class
+}       // end of MSTeleop class
