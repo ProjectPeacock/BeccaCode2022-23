@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 public class LiftTest extends LinearOpMode {
     public DcMotorEx motorLiftFront = null;
-    public DcMotorEx motorLiftRear = null;
+//    public DcMotorEx motorLiftRear = null;
 
     @Override
     public void runOpMode() {
@@ -26,6 +26,7 @@ public class LiftTest extends LinearOpMode {
         motorLiftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftFront.setPower(0);
 
+        /*
         motorLiftRear = hardwareMap.get(DcMotorEx.class, "motorLiftRear");
         motorLiftRear.setDirection(DcMotorEx.Direction.FORWARD);
 //        motorLiftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -33,6 +34,8 @@ public class LiftTest extends LinearOpMode {
         motorLiftRear.setTargetPosition(0);
         motorLiftRear.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motorLiftRear.setPower(0);
+
+         */
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -53,18 +56,18 @@ public class LiftTest extends LinearOpMode {
             }
 
             if(gamepad2.x){
-                motorLiftRear.setTargetPosition(0);
-                motorLiftRear.setPower(0.3);
+//                motorLiftRear.setTargetPosition(0);
+//                motorLiftRear.setPower(0.3);
             }
 
             if(gamepad2.y){
-                motorLiftRear.setTargetPosition(100);
-                motorLiftRear.setPower(0.3);
+//                motorLiftRear.setTargetPosition(100);
+//                motorLiftRear.setPower(0.3);
             }
 
             // Provide user feedback
             telemetry.addData("Motor Lift Front:", motorLiftFront.getCurrentPosition());
-            telemetry.addData("Motor Lift Rear:", motorLiftRear.getCurrentPosition());
+//            telemetry.addData("Motor Lift Rear:", motorLiftRear.getCurrentPosition());
             telemetry.update();
 
         }   // end of while(opModeIsActive)

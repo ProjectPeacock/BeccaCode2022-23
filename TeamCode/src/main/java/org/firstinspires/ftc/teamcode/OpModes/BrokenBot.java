@@ -94,18 +94,9 @@ public class BrokenBot extends LinearOpMode {
              * #################### LIFT CONTROL ###########################
              * #############################################################
              */
-            if (gamepad2.right_trigger > 0.1 && robot.motorLiftFront.getCurrentPosition()<=robot.MAX_LIFT_VALUE) {
-                liftPosition = liftPosition + 1;
-            } else if (gamepad2.left_trigger > 0.1 && robot.motorLiftFront.getCurrentPosition() >= robot.MIN_LIFT_VALUE) {
-                liftPosition = liftPosition - 1;
-            } else robot.motorLiftFront.setPower(0);
 
             // limit the values of liftPosition => This shouldn't be necessary if logic above works
             Range.clip(liftPosition, robot.MIN_LIFT_VALUE, robot.MAX_LIFT_VALUE);
-
-            // move lift to target position
-            robot.motorLiftFront.setTargetPosition(liftPosition);
-            robot.motorLiftFront.setPower(1);
 
             if(gamepad2.a){
                 drive.liftRearTest(0);
