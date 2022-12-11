@@ -347,8 +347,8 @@ public class DriveClass {
      * @param position
      */
     public void liftPosition(int position){
-        robot.motorLift1.setTargetPosition(position);
-        robot.motorLift1.setPower((1));
+        robot.motorLiftFront.setTargetPosition(position);
+        robot.motorLiftFront.setPower((1));
     }
 
     /**
@@ -356,8 +356,8 @@ public class DriveClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
-        robot.motorLift1.setTargetPosition(0);
-        robot.motorLift1.setPower((1));
+        robot.motorLiftFront.setTargetPosition(0);
+        robot.motorLiftFront.setPower((1));
     }
 
     /**
@@ -365,8 +365,8 @@ public class DriveClass {
      *  -   raise the lift to the lower junction level
      */
     public void liftLowerJunction(){
-        robot.motorLift1.setTargetPosition(robot.JUNCTION_LOWER);
-        robot.motorLift1.setPower(1);
+        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_LOWER);
+        robot.motorLiftFront.setPower(1);
     }
 
     /**
@@ -374,8 +374,8 @@ public class DriveClass {
      *  -   raise the lift to the mid junction level
      */
     public void liftMidJunction(){
-        robot.motorLift1.setTargetPosition(robot.JUNCTION_MID);
-        robot.motorLift1.setPower(1);
+        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_MID);
+        robot.motorLiftFront.setPower(1);
     }
 
     /**
@@ -383,8 +383,8 @@ public class DriveClass {
      *  -   raise the lift to the lower junction level
      */
     public void liftHighJunction(){
-        robot.motorLift1.setTargetPosition(robot.JUNCTION_HIGH);
-        robot.motorLift1.setPower(1);
+        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_HIGH);
+        robot.motorLiftFront.setPower(1);
     }
 
     /**

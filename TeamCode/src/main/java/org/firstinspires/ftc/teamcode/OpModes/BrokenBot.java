@@ -89,18 +89,18 @@ public class BrokenBot extends LinearOpMode {
              * #################### LIFT CONTROL ###########################
              * #############################################################
              */
-            if (gamepad2.right_trigger > 0.1 && robot.motorLift1.getCurrentPosition()<=robot.MAX_LIFT_VALUE) {
+            if (gamepad2.right_trigger > 0.1 && robot.motorLiftFront.getCurrentPosition()<=robot.MAX_LIFT_VALUE) {
                 liftPosition = liftPosition + 1;
-            } else if (gamepad2.left_trigger > 0.1 && robot.motorLift1.getCurrentPosition() >= robot.MIN_LIFT_VALUE) {
+            } else if (gamepad2.left_trigger > 0.1 && robot.motorLiftFront.getCurrentPosition() >= robot.MIN_LIFT_VALUE) {
                 liftPosition = liftPosition - 1;
-            } else robot.motorLift1.setPower(0);
+            } else robot.motorLiftFront.setPower(0);
 
             // limit the values of liftPosition => This shouldn't be necessary if logic above works
             Range.clip(liftPosition, robot.MIN_LIFT_VALUE, robot.MAX_LIFT_VALUE);
 
             // move lift to target position
-            robot.motorLift1.setTargetPosition(liftPosition);
-            robot.motorLift1.setPower(1);
+            robot.motorLiftFront.setTargetPosition(liftPosition);
+            robot.motorLiftFront.setPower(1);
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
                 clawOpen=!clawOpen;
@@ -115,7 +115,7 @@ public class BrokenBot extends LinearOpMode {
 
 
             // Provide user feedback
-            telemetry.addData("lift position:", robot.motorLift1.getCurrentPosition());
+            telemetry.addData("lift position:", robot.motorLiftFront.getCurrentPosition());
             telemetry.addData("MotorLR:", robot.motorLR.getCurrentPosition());
             telemetry.addData("MotorLF:", robot.motorLF.getCurrentPosition());
             telemetry.addData("MotorRF:", robot.motorRF.getCurrentPosition());
