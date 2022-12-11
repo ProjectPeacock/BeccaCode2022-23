@@ -108,19 +108,19 @@ public class BrokenBot extends LinearOpMode {
             robot.motorLiftFront.setPower(1);
 
             if(gamepad2.a){
-                drive.liftTest(0);
+                drive.liftRearTest(0);
             }
 
             if(gamepad2.b){
-                drive.liftTest(robot.JUNCTION_LOWER);
+                drive.liftRearTest(robot.JUNCTION_LOWER);
             }
 
             if(gamepad2.x){
-                drive.liftTest(robot.JUNCTION_MID);
+                drive.liftFrontTest(0);
             }
 
             if(gamepad2.y){
-                drive.liftTest(robot.JUNCTION_HIGH);
+                drive.liftFrontTest(robot.JUNCTION_LOWER);
             }
 
             if(gamepad1.a&&(currentTime.time() - buttonPress) > robot.BUTTON_TIMEOUT){
