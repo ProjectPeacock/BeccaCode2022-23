@@ -60,7 +60,7 @@ public class LiftTest extends LinearOpMode {
 
             if(gamepad2.y){
                 motorLiftRear.setTargetPosition(100);
-                motorLiftRear.setPower(0.3);
+                motorLiftRear.setPower(1);
             }
 
             // Provide user feedback

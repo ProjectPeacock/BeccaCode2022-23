@@ -88,24 +88,11 @@ public class SingleDriverTeleop extends LinearOpMode {
                 buttonPress = currentTime.time();
             }   // end if (gamepad1.x && ...)
             */
-
-/*
-            if (gamepad1.right_trigger > 0.1) {
-                robot.motorLiftFront.setPower(gamepad1.right_trigger);
-                robot.motorLiftRear.setPower(gamepad1.right_trigger);
-            } else if (gamepad1.left_trigger > 0.1) {
-//            } else if (gamepad2.left_trigger > 0.1&&robot.motorLift.getCurrentPosition()>=robot.liftMin) {
-                robot.motorLiftFront.setPower(-gamepad1.left_trigger);
-                robot.motorLiftRear.setPower(-gamepad1.right_trigger);
-            } else {
-                robot.motorLiftFront.setPower(0);
-                robot.motorLiftRear.setPower(0);
-            }
-            */
-            if(gamepad1.right_trigger>0.1){
-                liftPower=gamepad1.right_trigger;
-            }else if(gamepad1.left_trigger>0.1){
-                liftPower=-gamepad1.left_trigger;
+            
+            if(gamepad1.right_trigger>0.25){
+                liftPower=-gamepad1.right_trigger;
+            }else if(gamepad1.left_trigger>0.25){
+                liftPower=gamepad1.left_trigger;
             }else{
                 liftPower=0;
             }
@@ -122,18 +109,6 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
             robot.motorLiftFront.setPower(liftPower);
             robot.motorLiftRear.setPower(liftPower);
-            /* RUN_TO_POSITION test
-            robot.motorLiftFront.setPower(0.3);
-            robot.motorLiftRear.setPower(0.3);
-            if(gamepad1.dpad_up) {
-                robot.motorLiftFront.setTargetPosition(100);
-                robot.motorLiftRear.setTargetPosition(100);
-            }else{
-                robot.motorLiftFront.setTargetPosition(0);
-                robot.motorLiftRear.setTargetPosition(0);
-            }
-
-             */
 
 
             // Provide user feedback
