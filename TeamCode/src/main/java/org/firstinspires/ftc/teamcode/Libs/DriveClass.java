@@ -345,7 +345,7 @@ public class DriveClass {
     public void liftRearTest(int targetHeight){
         robot.motorLiftRear.setTargetPosition(targetHeight);
 //        robot.motorLiftFront.setTargetPosition(targetHeight);
-        robot.motorLiftRear.setPower(0.3);
+        robot.motorLiftRear.setPower(1);
 //        robot.motorLiftFront.setPower(0.3);
     }
 
@@ -353,7 +353,7 @@ public class DriveClass {
 //        robot.motorLiftRear.setTargetPosition(targetHeight);
         robot.motorLiftFront.setTargetPosition(targetHeight);
 //        robot.motorLiftRear.setPower(0.3);
-        robot.motorLiftFront.setPower(0.3);
+        robot.motorLiftFront.setPower(1);
     }
 
     /**
