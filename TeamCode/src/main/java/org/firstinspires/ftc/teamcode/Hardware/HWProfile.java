@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class HWProfile {
@@ -104,7 +105,7 @@ public class HWProfile {
         motorLiftRear.setPower(0);
 
         //init servos
-        servoGrabber = hwMap.get(Servo.class, "servoGrabber");
+        servoGrabber = hwMap.get(ServoImplEx.class, "servoGrabber");
 
         //init imu
         imu = hwMap.get(BNO055IMU.class, "imu");

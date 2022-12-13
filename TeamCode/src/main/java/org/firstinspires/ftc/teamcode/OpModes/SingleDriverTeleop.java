@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+
+import java.util.List;
 
 @TeleOp(name = "Single Driver Teleop Mode", group = "Competition")
 
@@ -34,9 +37,15 @@ public class SingleDriverTeleop extends LinearOpMode {
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
         boolean clawOpen = true;
         double liftPower=0;
         waitForStart();
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         while (opModeIsActive()) {
             /*
