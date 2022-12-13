@@ -116,24 +116,4 @@ public class HWProfile {
         imu = new RevIMU(ahwMap);
         imu.init();
     }
-    public double gyro360SelectAxis(int angle, double originAngle){
-        double current = imu.getAngles()[angle];
-        double rotationalAngle;
-
-        if (originAngle > 0){
-            if ((current >= 0) && (current <= 180)) {
-                rotationalAngle = current;
-            } else {
-                rotationalAngle = 180 + (180 + current);
-            }// end if(currentZ <=0) - else
-        } else {
-            if ((current <= 0) && (current >= -180)) {
-                rotationalAngle = current;
-            } else {
-                rotationalAngle = -180 - (180 - current);
-            }   // end if(currentZ <=0) - else
-        }   // end if(targetAngle >0)-else
-
-        return rotationalAngle;
-    }// end of method gyro360
 }  // end of HWProfile Class
