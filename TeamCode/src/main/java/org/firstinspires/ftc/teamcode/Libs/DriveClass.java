@@ -316,10 +316,10 @@ public class DriveClass {
      * @param RR power for right rear motor
      */
     public void setDrivePower(double RF, double LF, double LR, double RR){
-        robot.motorRF.setPower(RF);
-        robot.motorLF.setPower(LF);
-        robot.motorLR.setPower(LR);
-        robot.motorRR.setPower(RR);
+        robot.motorRF.set(RF);
+        robot.motorLF.set(LF);
+        robot.motorLR.set(LR);
+        robot.motorRR.set(RR);
     }   // end of the setDrivePower method
 
     /**
@@ -327,10 +327,10 @@ public class DriveClass {
      *  -   stops all drive motors
      */
     public void motorsHalt(){
-        robot.motorRF.setPower(0);
-        robot.motorLF.setPower(0);
-        robot.motorLR.setPower(0);
-        robot.motorRR.setPower(0);
+        robot.motorLF.stopMotor();
+        robot.motorLR.stopMotor();
+        robot.motorRF.stopMotor();
+        robot.motorRR.stopMotor();
     }   // end of motorsHalt method
 
     /*
@@ -345,7 +345,7 @@ public class DriveClass {
     public void liftRearTest(int targetHeight){
         robot.motorLiftRear.setTargetPosition(targetHeight);
 //        robot.motorLiftFront.setTargetPosition(targetHeight);
-        robot.motorLiftRear.setPower(1);
+        robot.motorLiftRear.set(1);
 //        robot.motorLiftFront.setPower(0.3);
     }
 
@@ -353,7 +353,7 @@ public class DriveClass {
 //        robot.motorLiftRear.setTargetPosition(targetHeight);
         robot.motorLiftFront.setTargetPosition(targetHeight);
 //        robot.motorLiftRear.setPower(0.3);
-        robot.motorLiftFront.setPower(1);
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -363,7 +363,7 @@ public class DriveClass {
      */
     public void liftPosition(int position){
         robot.motorLiftFront.setTargetPosition(position);
-        robot.motorLiftFront.setPower((1));
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -372,7 +372,7 @@ public class DriveClass {
      */
     public void liftReset(){
         robot.motorLiftFront.setTargetPosition(0);
-        robot.motorLiftFront.setPower((1));
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -381,7 +381,7 @@ public class DriveClass {
      */
     public void liftLowerJunction(){
         robot.motorLiftFront.setTargetPosition(robot.JUNCTION_LOWER);
-        robot.motorLiftFront.setPower(1);
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -390,7 +390,7 @@ public class DriveClass {
      */
     public void liftMidJunction(){
         robot.motorLiftFront.setTargetPosition(robot.JUNCTION_MID);
-        robot.motorLiftFront.setPower(1);
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -399,7 +399,7 @@ public class DriveClass {
      */
     public void liftHighJunction(){
         robot.motorLiftFront.setTargetPosition(robot.JUNCTION_HIGH);
-        robot.motorLiftFront.setPower(1);
+        robot.motorLiftFront.set(1);
     }
 
     /**
@@ -489,7 +489,7 @@ public class DriveClass {
      * @return zAngle
      */
     public double getZAngle(){
-        return (-robot.imu.getAngularOrientation().firstAngle);
+        return (-robot.imu.getRotation2d().getDegrees());
     }   // close getZAngle method
 
     /**
