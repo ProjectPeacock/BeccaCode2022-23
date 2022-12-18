@@ -101,8 +101,8 @@ public class HWProfile {
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
-        motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_223);
-        motorLiftRear = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_223);
+        motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
+        motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
 
         //establish motorgroup for lift and set mode
         winchMotors = new MotorGroup (motorLiftFront, motorLiftRear);

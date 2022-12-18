@@ -43,7 +43,7 @@ public class SingleDriverTeleop extends LinearOpMode {
         double forwardPower=0, strafePower=0;
 
         waitForStart();
-        double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0;
+        double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -56,11 +56,11 @@ public class SingleDriverTeleop extends LinearOpMode {
             //anti-tip "algorithm"
             if(antiTip){
                 currentTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS];
-                telemetry.addData("start IMU Angle = ",startTilt);
-                telemetry.addData("current IMU Angle = ",currentTilt);
-                telemetry.addData("current Tilt = ",Math.abs(currentTilt-startTilt));
+                tip = Math.abs(currentTilt-startTilt);
                 //if robot is tipped more than tolerance, multiply drive power by adjustment
-                if(Math.abs(currentTilt-startTilt)>robot.ANTI_TIP_TOL){
+                if(tip>robot.ANTI_TIP_TOL*2){
+                    forwardPower*=-1;
+                }else if(tip>robot.ANTI_TIP_TOL){
                     forwardPower*=robot.ANTI_TIP_ADJ;
                 }
             }
@@ -104,7 +104,8 @@ public class SingleDriverTeleop extends LinearOpMode {
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
             telemetry.addData("Lift power = ",liftPower);
-            telemetry.addData("claw open = ", clawToggle);
+            telemetry.addData("Claw open = ", clawToggle);
+            telemetry.addData("Current tip = ",tip);
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
