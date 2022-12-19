@@ -78,13 +78,11 @@ public class HWProfile {
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
         motorLF.setRunMode(Motor.RunMode.RawPower);
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        //motorLF.setInverted(true);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
         motorLR.setRunMode(Motor.RunMode.RawPower);
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        //motorLR.setInverted(true);
         motorLR.resetEncoder();
 
         motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);

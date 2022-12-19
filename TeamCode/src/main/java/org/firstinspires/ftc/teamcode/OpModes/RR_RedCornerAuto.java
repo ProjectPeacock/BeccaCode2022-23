@@ -17,16 +17,16 @@ public class RR_RedCornerAuto extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Pose2d startPose = new Pose2d(-29,-66,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
-        /*
+
         Trajectory scoreCone1 = drive.trajectoryBuilder(startPose)
                 .splineTo(new Vector2d(-27,-55),Math.toRadians(65))
                 .UNSTABLE_addDisplacementMarkerOffset(-0.5,()->{})
                 .waitSeconds(0.5)
                 .setTangent(90)
                 .setReversed(true)
-                .splineTo(new Vector2d(-29,-66),Math.toRadians(90));
+                .splineTo(new Vector2d(-29,-66),Math.toRadians(90))
 
-         */
+                .build();
 
 
 
