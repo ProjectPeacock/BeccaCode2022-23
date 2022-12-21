@@ -31,16 +31,20 @@ public class SingleDriverTeleop extends LinearOpMode {
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
+        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.B);
+        ButtonReader xReader = new ButtonReader(gp1, GamepadKeys.Button.X);
+        ButtonReader yReader = new ButtonReader(gp1, GamepadKeys.Button.Y);
+        ButtonReader liftResetButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
-        double liftPower=0;
         boolean clawToggle=false, clawReady=false;
         boolean antiTip=true;
-        double forwardPower=0, strafePower=0;
+        double forwardPower=0, strafePower=0, liftPower=1;
+        int liftPos=0;
 
         waitForStart();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
@@ -68,13 +72,14 @@ public class SingleDriverTeleop extends LinearOpMode {
             //mecanum drive setups
             if(robot.fieldCentric){
                 //field centric setup
-                robot.mecanum.driveFieldCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, false);
+                robot.mecanum.driveFieldCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
             }else{
                 //robot centric setup
-                robot.mecanum.driveRobotCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER, false);
+                robot.mecanum.driveRobotCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
             }
 
             //lift power (take analog from triggers, apply to variable, variable gets applied to motors
+            /*
             if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
                 liftPower=gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
             }else if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
@@ -83,6 +88,7 @@ public class SingleDriverTeleop extends LinearOpMode {
                 liftPower=0;
             }
             robot.winchMotors.set(liftPower);
+            */
 
             //claw control
             if(aReader.isDown()&&clawReady){
@@ -100,6 +106,19 @@ public class SingleDriverTeleop extends LinearOpMode {
             } else {
                 robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
+
+            if(xReader.isDown()){
+                liftPos=robot.JUNCTION_LOWER;
+            }else if(yReader.isDown()) {
+                liftPos=robot.JUNCTION_MID;
+            }else if(bReader.isDown()){
+                liftPos=robot.JUNCTION_HIGH;
+            }else if(liftResetButton.isDown()){
+                liftPos = 0;
+            }
+
+            robot.winchMotors.setTargetPosition(liftPos);
+            robot.winchMotors.set(liftPower);
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());

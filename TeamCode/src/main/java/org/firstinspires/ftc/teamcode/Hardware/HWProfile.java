@@ -104,7 +104,9 @@ public class HWProfile {
 
         //establish motorgroup for lift and set mode
         winchMotors = new MotorGroup (motorLiftFront, motorLiftRear);
-        winchMotors.setRunMode(Motor.RunMode.RawPower);
+        winchMotors.setRunMode(Motor.RunMode.PositionControl);
+        winchMotors.setPositionCoefficient(0.05);
+        winchMotors.setPositionTolerance(10);
         winchMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         //init servos
