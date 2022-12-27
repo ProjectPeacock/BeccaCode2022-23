@@ -58,7 +58,7 @@ public class HWProfile {
     public MecanumDrive mecanum = null;
     public MotorGroup winchMotors = null;
     public Motor.Encoder liftEncoder = null;
-
+    public Motor autoLight = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
@@ -95,16 +95,24 @@ public class HWProfile {
         motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRR.resetEncoder();
 
+        autoLight = new Motor(ahwMap,"autoLight", Motor.GoBILDA.BARE);
+        autoLight.setRunMode(Motor.RunMode.RawPower);
+
         //drivebase init
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
-        motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
-        motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
+        MotorEx motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
+        motorLiftFront.setRunMode(Motor.RunMode.RawPower);
+        motorLiftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        MotorEx motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
+        motorLiftRear.setRunMode(Motor.RunMode.RawPower);
+        motorLiftRear.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         //establish motorgroup for lift and set mode
         winchMotors = new MotorGroup (motorLiftFront, motorLiftRear);
-        winchMotors.setRunMode(Motor.RunMode.PositionControl);
+        winchMotors.setRunMode(Motor.RunMode.RawPower);
         winchMotors.setPositionCoefficient(0.05);
         winchMotors.setPositionTolerance(10);
         winchMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);

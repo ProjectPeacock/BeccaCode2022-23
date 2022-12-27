@@ -49,6 +49,12 @@ public class BrokenBot extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            if (gamepad2.right_trigger>0.01) {
+                robot.autoLight.set(-gamepad2.right_trigger);
+            }else{
+                robot.autoLight.set(0);
+            }
             if(fieldCentric){
                 robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, false);
             }else{
