@@ -110,11 +110,11 @@ public class SingleDriverTeleop extends LinearOpMode {
                 robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
 
-            if (gamepad1.left_trigger > .1) {
-                liftPos = liftPos - 50;
+            if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1) {
+                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*0.5;
             }
-            if (gamepad1.right_trigger > 0.1){
-                liftPos = liftPos + 100;
+            if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
+                liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
             }
 
             liftPos = Range.clip(liftPos, robot.MIN_LIFT_VALUE, robot.MAX_LIFT_VALUE);
