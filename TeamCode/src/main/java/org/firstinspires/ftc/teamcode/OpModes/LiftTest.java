@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Lift Test", group = "Competition")
+@TeleOp(name = "Lift Test", group = "Development")
 @Disabled
 public class LiftTest extends LinearOpMode {
     public DcMotorEx motorLiftFront = null;

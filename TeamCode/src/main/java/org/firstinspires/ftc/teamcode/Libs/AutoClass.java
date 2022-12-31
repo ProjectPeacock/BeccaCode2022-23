@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.Libs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import com.qualcomm.robotcore.util.Range;
+
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
@@ -22,9 +24,13 @@ public class AutoClass {
     }   // close AutoClass constructor Method
 
 
-    public void liftPosition(int position){
+
+    public void liftPosition(int position, double power){
         robot.motorLiftFront.setTargetPosition(position);
-        robot.motorLiftFront.set(1);
+        robot.motorLiftRear.setTargetPosition(position);
+        robot.motorLiftFront.setPower(power);
+        robot.motorLiftFront.setPower(power);
+
     }
 
     /**
@@ -32,35 +38,11 @@ public class AutoClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
-        robot.motorLiftFront.setTargetPosition(0);
-        robot.motorLiftFront.set(1);
-    }
 
-    /**
-     * Method: liftLowerJunction
-     *  -   raise the lift to the lower junction level
-     */
-    public void liftLowerJunction(){
-        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_LOWER);
-        robot.motorLiftFront.set(1);
-    }
-
-    /**
-     * Method: liftMidJunction
-     *  -   raise the lift to the mid junction level
-     */
-    public void liftMidJunction(){
-        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_MID);
-        robot.motorLiftFront.set(1);
-    }
-
-    /**
-     * Method: liftHighJunction
-     *  -   raise the lift to the lower junction level
-     */
-    public void liftHighJunction(){
-        robot.motorLiftFront.setTargetPosition(robot.JUNCTION_HIGH);
-        robot.motorLiftFront.set(1);
+        robot.motorLiftFront.setTargetPosition(robot.LIFT_RESET);
+        robot.motorLiftRear.setTargetPosition(robot.LIFT_RESET);
+        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
+        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
     }
 
     /**
