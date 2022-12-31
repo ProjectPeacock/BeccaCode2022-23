@@ -91,8 +91,12 @@ public class SingleDriverTeleop extends LinearOpMode {
             }else{
                 liftPower=0;
             }
-            robot.winchMotors.set(liftPower);
 
+<<<<<<< Updated upstream
+=======
+             */
+
+>>>>>>> Stashed changes
             //claw control
             if(aReader.isDown()&&clawReady){
                 clawToggle=!clawToggle;

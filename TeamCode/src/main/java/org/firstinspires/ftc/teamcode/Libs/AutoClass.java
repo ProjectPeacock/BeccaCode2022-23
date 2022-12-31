@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Libs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+<<<<<<< Updated upstream
 import com.qualcomm.robotcore.util.Range;
+=======
+>>>>>>> Stashed changes
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
@@ -22,9 +25,17 @@ public class AutoClass {
     }   // close AutoClass constructor Method
 
 
+<<<<<<< Updated upstream
     public void liftPosition(int position){
         robot.motorLiftFront.setTargetPosition(position);
         robot.motorLiftFront.set(1);
+=======
+    public void liftPosition(int position, double power){
+        robot.motorLiftFront.setTargetPosition(position);
+        robot.motorLiftRear.setTargetPosition(position);
+        robot.motorLiftFront.setPower(power);
+        robot.motorLiftFront.setPower(power);
+>>>>>>> Stashed changes
     }
 
     /**
@@ -32,6 +43,7 @@ public class AutoClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
+<<<<<<< Updated upstream
         robot.motorLiftFront.setTargetPosition(0);
         robot.motorLiftFront.set(1);
     }
@@ -61,6 +73,12 @@ public class AutoClass {
     public void liftHighJunction(){
         robot.motorLiftFront.setTargetPosition(robot.JUNCTION_HIGH);
         robot.motorLiftFront.set(1);
+=======
+        robot.motorLiftFront.setTargetPosition(robot.LIFT_RESET);
+        robot.motorLiftRear.setTargetPosition(robot.LIFT_RESET);
+        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
+        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
+>>>>>>> Stashed changes
     }
 
     /**
