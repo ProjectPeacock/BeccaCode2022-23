@@ -82,28 +82,24 @@ public class HWProfile {
 
         //drive motor init
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
-        motorLF.setInverted(false);
         motorLF.setRunMode(Motor.RunMode.RawPower);
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
-        motorLR.setInverted(false);
         motorLR.setRunMode(Motor.RunMode.RawPower);
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.resetEncoder();
 
         motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
-        motorRF.setInverted(false);
         motorRF.setRunMode(Motor.RunMode.RawPower);
         motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRF.resetEncoder();
 
         motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
-        motorRR.setInverted(false);
         motorRR.setRunMode(Motor.RunMode.RawPower);
         motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        motorRR.resetEncoder();3
+        motorRR.resetEncoder();
 
         //drivebase init
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
