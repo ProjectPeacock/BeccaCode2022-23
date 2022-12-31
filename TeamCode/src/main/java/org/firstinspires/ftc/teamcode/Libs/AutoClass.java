@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Libs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import com.qualcomm.robotcore.util.Range;
+
+
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
 public class AutoClass {
@@ -21,11 +24,13 @@ public class AutoClass {
     }   // close AutoClass constructor Method
 
 
+
     public void liftPosition(int position, double power){
         robot.motorLiftFront.setTargetPosition(position);
         robot.motorLiftRear.setTargetPosition(position);
         robot.motorLiftFront.setPower(power);
         robot.motorLiftFront.setPower(power);
+
     }
 
     /**
@@ -33,6 +38,7 @@ public class AutoClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
+
         robot.motorLiftFront.setTargetPosition(robot.LIFT_RESET);
         robot.motorLiftRear.setTargetPosition(robot.LIFT_RESET);
         robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);

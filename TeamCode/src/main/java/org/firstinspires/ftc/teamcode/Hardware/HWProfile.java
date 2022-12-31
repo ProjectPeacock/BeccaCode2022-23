@@ -38,6 +38,7 @@ public class HWProfile {
 
     //lift constants
     final public double LIFT_POS_COEF = 0.05;
+
     final public int MAX_LIFT_VALUE = 1275;
     final public int LIFT_RESET = 0;
     final public int LIFT_JUNCTION_LOWER = 400;
@@ -59,12 +60,14 @@ public class HWProfile {
     public MotorEx motorLR = null;
     public MotorEx motorRF = null;
     public MotorEx motorRR = null;
+
     public DcMotorEx motorLiftFront = null;
     public DcMotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public DcMotorEx autoLight = null;
+
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
@@ -82,33 +85,46 @@ public class HWProfile {
 
         //drive motor init
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
+
         motorLF.setInverted(true);
         motorLF.setRunMode(Motor.RunMode.RawPower);
+
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
+
         motorLR.setInverted(true);
         motorLR.setRunMode(Motor.RunMode.RawPower);
+
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.resetEncoder();
 
         motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
+
         motorRF.setInverted(true);
+
         motorRF.setRunMode(Motor.RunMode.RawPower);
         motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRF.resetEncoder();
 
         motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
+
         motorRR.setInverted(true);
+
         motorRR.setRunMode(Motor.RunMode.RawPower);
         motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRR.resetEncoder();
+
+
+        autoLight = new Motor(ahwMap,"autoLight", Motor.GoBILDA.BARE);
+        autoLight.setRunMode(Motor.RunMode.RawPower);
 
         //drivebase init
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
+
         motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
         motorLiftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         motorLiftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -122,7 +138,6 @@ public class HWProfile {
         motorLiftRear.setTargetPosition(0);
         motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLiftRear.setPower(0);
-
         autoLight = hwMap.get(DcMotorEx.class, "autoLight");
         autoLight.setPower(0);
 

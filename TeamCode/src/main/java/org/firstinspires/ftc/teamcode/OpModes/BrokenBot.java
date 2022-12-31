@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -51,7 +52,6 @@ public class BrokenBot extends LinearOpMode {
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
-
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
