@@ -7,11 +7,10 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -39,13 +38,6 @@ public class HWProfile {
 
     //lift constants
     final public double LIFT_POS_COEF = 0.05;
-<<<<<<< Updated upstream
-    final public int MAX_LIFT_VALUE = 5000;
-    final public int MIN_LIFT_VALUE = 0;
-    final public int JUNCTION_LOWER = 2000;
-    final public int JUNCTION_MID = 4000;
-    final public int JUNCTION_HIGH = 5000;
-=======
     final public int MAX_LIFT_VALUE = 1275;
     final public int LIFT_RESET = 0;
     final public int LIFT_JUNCTION_LOWER = 400;
@@ -59,7 +51,6 @@ public class HWProfile {
     final public double LIFT_DOWN_POWER = 0.5;
 
     final public double PARK_TIME = 27;     // sets the time for when the robot needs to park in auto
->>>>>>> Stashed changes
 
     final public double MIN_PIDROTATE_POWER = 0.2;
 
@@ -68,23 +59,12 @@ public class HWProfile {
     public MotorEx motorLR = null;
     public MotorEx motorRF = null;
     public MotorEx motorRR = null;
-<<<<<<< Updated upstream
-    public MotorEx motorLiftFront = null;
-    public MotorEx motorLiftRear = null;
-    public RevIMU imu = null;
-    public ServoEx servoGrabber = null;
-    public MecanumDrive mecanum = null;
-    public MotorGroup winchMotors = null;
-    public Motor.Encoder liftEncoder = null;
-    public Motor autoLight = null;
-=======
     public DcMotorEx motorLiftFront = null;
     public DcMotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public DcMotorEx autoLight = null;
->>>>>>> Stashed changes
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
@@ -102,71 +82,33 @@ public class HWProfile {
 
         //drive motor init
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
-<<<<<<< Updated upstream
-        motorLF.setRunMode(Motor.RunMode.RawPower);
-        motorLF.setInverted(true);
-=======
         motorLF.setInverted(true);
         motorLF.setRunMode(Motor.RunMode.RawPower);
->>>>>>> Stashed changes
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
-<<<<<<< Updated upstream
-        motorLR.setRunMode(Motor.RunMode.RawPower);
-        motorLR.setInverted(true);
-=======
         motorLR.setInverted(true);
         motorLR.setRunMode(Motor.RunMode.RawPower);
->>>>>>> Stashed changes
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.resetEncoder();
 
         motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
-<<<<<<< Updated upstream
-=======
         motorRF.setInverted(true);
->>>>>>> Stashed changes
         motorRF.setRunMode(Motor.RunMode.RawPower);
         motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRF.resetEncoder();
 
         motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
-<<<<<<< Updated upstream
-=======
         motorRR.setInverted(true);
->>>>>>> Stashed changes
         motorRR.setRunMode(Motor.RunMode.RawPower);
         motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRR.resetEncoder();
 
-<<<<<<< Updated upstream
-        autoLight = new Motor(ahwMap,"autoLight", Motor.GoBILDA.BARE);
-        autoLight.setRunMode(Motor.RunMode.RawPower);
-
-=======
->>>>>>> Stashed changes
         //drivebase init
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
-<<<<<<< Updated upstream
-        MotorEx motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
-        motorLiftFront.setRunMode(Motor.RunMode.RawPower);
-        motorLiftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-
-        MotorEx motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
-        motorLiftRear.setRunMode(Motor.RunMode.RawPower);
-        motorLiftRear.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-
-        //establish motorgroup for lift and set mode
-        winchMotors = new MotorGroup (motorLiftFront, motorLiftRear);
-        winchMotors.setRunMode(Motor.RunMode.RawPower);
-        winchMotors.setPositionCoefficient(0.05);
-        winchMotors.setPositionTolerance(10);
-        winchMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-=======
         motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
         motorLiftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         motorLiftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -183,7 +125,6 @@ public class HWProfile {
 
         autoLight = hwMap.get(DcMotorEx.class, "autoLight");
         autoLight.setPower(0);
->>>>>>> Stashed changes
 
         //init servos
         servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);

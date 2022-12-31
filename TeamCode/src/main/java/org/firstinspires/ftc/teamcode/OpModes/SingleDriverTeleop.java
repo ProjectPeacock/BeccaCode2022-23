@@ -1,20 +1,12 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 
-import android.widget.Button;
-
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
-import com.arcrobotics.ftclib.hardware.RevIMU;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
@@ -84,6 +76,7 @@ public class SingleDriverTeleop extends LinearOpMode {
 
             //lift power (take analog from triggers, apply to variable, variable gets applied to motors
 
+            /*
             if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
                 liftPower=gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
             }else if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
@@ -92,11 +85,8 @@ public class SingleDriverTeleop extends LinearOpMode {
                 liftPower=0;
             }
 
-<<<<<<< Updated upstream
-=======
              */
 
->>>>>>> Stashed changes
             //claw control
             if(aReader.isDown()&&clawReady){
                 clawToggle=!clawToggle;
@@ -121,7 +111,6 @@ public class SingleDriverTeleop extends LinearOpMode {
                 liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
             }
 
-            liftPos = Range.clip(liftPos, robot.MIN_LIFT_VALUE, robot.MAX_LIFT_VALUE);
 
             /*
             if(xReader.isDown()){
@@ -135,8 +124,11 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
             */
 
-            robot.winchMotors.setTargetPosition(liftPos);
-            robot.winchMotors.set(liftPower);
+            liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);
+            robot.motorLiftFront.setTargetPosition(liftPos);
+            robot.motorLiftRear.setTargetPosition(liftPos);
+            robot.motorLiftFront.setPower(liftPower);
+            robot.motorLiftRear.setPower(liftPower);
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
