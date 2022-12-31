@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
-    public static double ANGLE = 180; // deg
+    public static double ANGLE = 90; // deg
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -24,17 +23,5 @@ public class TurnTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         drive.turn(Math.toRadians(ANGLE));
-
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("x", poseEstimate.getX());
-        telemetry.addData("y", poseEstimate.getY());
-        telemetry.addData("Target Angle in Degrees = ", ANGLE);
-        telemetry.addData("Target Angle in Radians = ", Math.toRadians(ANGLE));
-        telemetry.addData("heading - Radians", poseEstimate.getHeading());
-        telemetry.addData("heading - angle", Math.toDegrees(poseEstimate.getHeading()));
-        telemetry.update();
-
-        sleep(15000);
-
     }
 }
