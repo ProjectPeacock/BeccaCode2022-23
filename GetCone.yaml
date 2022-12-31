@@ -20,7 +20,7 @@ waypoints:
 - position:
     x: -36.0
     y: -20.0
-  heading: 2.356194490192345
+  heading: 1.5707963267948966
   tangent: 1.5707963267948966
   interpolationType: "SPLINE"
 - position:

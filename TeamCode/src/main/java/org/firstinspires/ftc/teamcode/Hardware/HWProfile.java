@@ -1,29 +1,44 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.RevIMU;
+import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class HWProfile {
     //constants
+    public final boolean fieldCentric=true;
+
+    //claw positions
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.55;
 
+    //drive constants
     public final double MAX_DRIVE_POWER =1;
-
-    public final double BUTTON_TIMEOUT =0.5;
-
+    public final double TURN_MULTIPLIER = 0.5;
     public final double STRAFE_FACTOR = 0.75;
+
+    //anti-tip constants
+    public final double ANTI_TIP_ADJ=0.3;
+    public final double ANTI_TIP_TOL=10;
+    public final int ANTI_TIP_AXIS=1;
 
     final public double DRIVE_TICKS_PER_INCH = 23.7;
     final public double USD_COUNTS_PER_INCH = 23.7;
 
+    //lift constants
+    final public double LIFT_POS_COEF = 0.05;
     final public int MAX_LIFT_VALUE = 5000;
     final public int MIN_LIFT_VALUE = 0;
     final public int JUNCTION_LOWER = 2000;
@@ -33,19 +48,22 @@ public class HWProfile {
     final public double MIN_PIDROTATE_POWER = 0.2;
 
     /* Public OpMode members. */
-    public DcMotorEx motorLF   = null;
-    public DcMotorEx  motorLR  = null;
-    public DcMotorEx  motorRF     = null;
-    public DcMotorEx  motorRR    = null;
-    public DcMotorEx motorLiftFront = null;
-    public DcMotorEx motorLiftRear = null;
-    public BNO055IMU imu = null;
-    public Servo servoGrabber = null;
-
+    public MotorEx motorLF = null;
+    public MotorEx motorLR = null;
+    public MotorEx motorRF = null;
+    public MotorEx motorRR = null;
+    public MotorEx motorLiftFront = null;
+    public MotorEx motorLiftRear = null;
+    public RevIMU imu = null;
+    public ServoEx servoGrabber = null;
+    public MecanumDrive mecanum = null;
+    public MotorGroup winchMotors = null;
+    public Motor.Encoder liftEncoder = null;
+    public Motor autoLight = null;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private final ElapsedTime period  = new ElapsedTime();
+    HardwareMap hwMap =  null;
+    private final ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
     public HWProfile(){
@@ -56,68 +74,57 @@ public class HWProfile {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorDistance;
 
-        // Define and Initialize Motors
-        motorLF = hwMap.get(DcMotorEx.class, "motorLF");
-        motorLF.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        motorLF.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorLF.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLF.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorLF.setPower(0);
+        //drive motor init
+        motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
+        motorLF.setRunMode(Motor.RunMode.RawPower);
+        motorLF.setInverted(true);
+        motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorLF.resetEncoder();
 
-        motorLR = hwMap.get(DcMotorEx.class, "motorLR");
-        motorLR.setDirection(DcMotorEx.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        motorLR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorLR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorLR.setPower(0);
+        motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
+        motorLR.setRunMode(Motor.RunMode.RawPower);
+        motorLR.setInverted(true);
+        motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorLR.resetEncoder();
 
-        motorRF = hwMap.get(DcMotorEx.class, "motorRF");
-        motorRF.setDirection(DcMotorEx.Direction.FORWARD);
-        motorRF.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorRF.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorRF.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorRF.setPower(0);
+        motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
+        motorRF.setRunMode(Motor.RunMode.RawPower);
+        motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorRF.resetEncoder();
 
-        motorRR = hwMap.get(DcMotorEx.class, "motorRR");
-        motorRR.setDirection(DcMotorEx.Direction.FORWARD);
-        motorRR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorRR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorRR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorRR.setPower(0);
+        motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
+        motorRR.setRunMode(Motor.RunMode.RawPower);
+        motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorRR.resetEncoder();
 
-        //lift motor init
-        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
-        motorLiftFront.setDirection(DcMotorEx.Direction.FORWARD);
-        motorLiftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorLiftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftFront.setTargetPosition(0);
-        motorLiftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motorLiftFront.setPower(0);
+        autoLight = new Motor(ahwMap,"autoLight", Motor.GoBILDA.BARE);
+        autoLight.setRunMode(Motor.RunMode.RawPower);
 
-        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
-        motorLiftRear.setDirection(DcMotorEx.Direction.FORWARD);
-        motorLiftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorLiftRear.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftRear.setTargetPosition(0);
-        motorLiftRear.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motorLiftRear.setPower(0);
+        //drivebase init
+        mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
+
+        //lift motors init
+        MotorEx motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
+        motorLiftFront.setRunMode(Motor.RunMode.RawPower);
+        motorLiftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        MotorEx motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
+        motorLiftRear.setRunMode(Motor.RunMode.RawPower);
+        motorLiftRear.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        //establish motorgroup for lift and set mode
+        winchMotors = new MotorGroup (motorLiftFront, motorLiftRear);
+        winchMotors.setRunMode(Motor.RunMode.RawPower);
+        winchMotors.setPositionCoefficient(0.05);
+        winchMotors.setPositionTolerance(10);
+        winchMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         //init servos
-        servoGrabber = hwMap.get(ServoImplEx.class, "servoGrabber");
+        servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);
 
         //init imu
-        imu = hwMap.get(BNO055IMU.class, "imu");
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(parameters);
-
+        imu = new RevIMU(ahwMap);
+        imu.init();
     }
 }  // end of HWProfile Class
