@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -77,11 +78,13 @@ public class HWProfile {
         //drive motor init
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
         motorLF.setRunMode(Motor.RunMode.RawPower);
+        motorLF.setInverted(true);
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
         motorLR.setRunMode(Motor.RunMode.RawPower);
+        motorLR.setInverted(true);
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.resetEncoder();
 

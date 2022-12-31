@@ -91,12 +91,16 @@ public class BrokenBot extends LinearOpMode {
 
             if(gp1.isDown(GamepadKeys.Button.DPAD_UP)) {
                 robot.motorLF.set(1);
+                telemetry.addData("Motor in Motion: ", "Left Front ");
             } else if (gp1.isDown(GamepadKeys.Button.DPAD_DOWN)){
                 robot.motorLR.set(1);
+                telemetry.addData("Motor in Motion: ", "Left Rear ");
             } else if (gp1.isDown(GamepadKeys.Button.DPAD_LEFT)) {
                 robot.motorRF.set(1);
+                telemetry.addData("Motor in Motion: ", "Right Front ");
             } else if (gp1.isDown(GamepadKeys.Button.DPAD_RIGHT)){
                 robot.motorRR.set(1);
+                telemetry.addData("Motor in Motion: ", "Right Rear ");
             }
 
 
