@@ -34,7 +34,7 @@ public class BrokenBot extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        boolean fieldCentric = false;
+        boolean fieldCentric = true;
         boolean liftToPosition = true;
         int liftPosition = 0;
         LinearOpMode opMode = this;
@@ -83,9 +83,9 @@ public class BrokenBot extends LinearOpMode {
                 robot.autoLight.setPower(0);
             }
             if(fieldCentric){
-                robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, false);
+                robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
             }else{
-                robot.mecanum.driveRobotCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER, false);
+                robot.mecanum.driveRobotCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
             }
 
             if(clawToggleButton.isDown()&&clawReady){
@@ -102,7 +102,7 @@ public class BrokenBot extends LinearOpMode {
                 robot.servoGrabber.setPosition(l2_CLAW_CLOSE);
             }
 
-
+/*
             if(gp1.isDown(GamepadKeys.Button.DPAD_UP)) {
                 robot.motorLF.set(1);
             } else if (gp1.isDown(GamepadKeys.Button.DPAD_DOWN)){
@@ -112,6 +112,7 @@ public class BrokenBot extends LinearOpMode {
             } else if (gp1.isDown(GamepadKeys.Button.DPAD_RIGHT)){
                 robot.motorRR.set(1);
             }
+            */
 
             /*
              * #############################################################
@@ -190,6 +191,12 @@ public class BrokenBot extends LinearOpMode {
             dashTelemetry.put("10 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
             dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
             dashTelemetry.put("12 - Lift Power = ", liftPower);
+            dashTelemetry.put("13 - motorLF encoder = ", robot.motorLF.getCurrentPosition());
+            dashTelemetry.put("14 - motorLR encoder = ", robot.motorLR.getCurrentPosition());
+            dashTelemetry.put("15 - motorRF encoder = ", robot.motorRF.getCurrentPosition());
+            dashTelemetry.put("16 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
+            dashTelemetry.put("17 - motorLiftFront position = ", robot.motorLiftFront.getCurrentPosition());
+            dashTelemetry.put("18 - motorLiftRear position = ", robot.motorLiftFront.getCurrentPosition());
             dashboard.sendTelemetryPacket(dashTelemetry);
 
         }   // end of while(opModeIsActive)
