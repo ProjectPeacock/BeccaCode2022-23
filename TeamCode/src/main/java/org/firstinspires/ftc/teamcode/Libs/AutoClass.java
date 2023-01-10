@@ -22,10 +22,8 @@ public class AutoClass {
 
 
     public void liftPosition(int position, double power){
-        robot.motorLiftFront.setTargetPosition(position);
-        robot.motorLiftRear.setTargetPosition(position);
-        robot.motorLiftFront.setPower(power);
-        robot.motorLiftFront.setPower(power);
+        robot.winch.setTargetPosition(position);
+        robot.winch.set(power);
     }
 
     /**
@@ -33,10 +31,8 @@ public class AutoClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
-        robot.motorLiftFront.setTargetPosition(robot.LIFT_RESET);
-        robot.motorLiftRear.setTargetPosition(robot.LIFT_RESET);
-        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
-        robot.motorLiftFront.setPower(robot.LIFT_DOWN_POWER);
+        robot.winch.setTargetPosition(robot.LIFT_RESET);
+        robot.winch.set(robot.LIFT_DOWN_POWER);
     }
 
     /**

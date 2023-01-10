@@ -7,9 +7,6 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -49,6 +46,7 @@ public class HWProfile {
     final public int LIFT_CONE2 = 200;
     final public double LIFT_UP_POWER = 1;
     final public double LIFT_DOWN_POWER = 0.5;
+    final public double LIFT_KP=0.05;
 
     final public double PARK_TIME = 27;     // sets the time for when the robot needs to park in auto
 
@@ -59,12 +57,16 @@ public class HWProfile {
     public MotorEx motorLR = null;
     public MotorEx motorRF = null;
     public MotorEx motorRR = null;
-    public DcMotorEx motorLiftFront = null;
-    public DcMotorEx motorLiftRear = null;
+    public MotorEx motorLiftFront = null;
+    public MotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
-    public DcMotorEx autoLight = null;
+    public MotorEx autoLight = null;
+    public Motor.Encoder forwardBackwardOdo = null;
+    public Motor.Encoder sideSideOdo = null;
+
+    public MotorGroup winch = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
@@ -105,22 +107,28 @@ public class HWProfile {
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
-        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
-        motorLiftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorLiftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftFront.setTargetPosition(0);
-        motorLiftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLiftFront.setPower(0);
+        motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
+        motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
 
-        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
-        motorLiftRear.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorLiftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftRear.setTargetPosition(0);
-        motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLiftRear.setPower(0);
+        winch = new MotorGroup(motorLiftFront,motorLiftRear);
+        winch.setPositionCoefficient(LIFT_KP);
+        winch.setTargetPosition(0);
+        winch.setRunMode(Motor.RunMode.PositionControl);
+        winch.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        winch.stopMotor();
+        winch.resetEncoder();
 
-        autoLight = hwMap.get(DcMotorEx.class, "autoLight");
-        autoLight.setPower(0);
+        //light init
+        autoLight = new MotorEx(ahwMap, "sideSideOdo", 8192,10000);
+        autoLight.set(0);
+
+        //odometry encoders init
+        sideSideOdo = autoLight.encoder;
+        sideSideOdo.reset();
+
+        MotorEx xAxisOdoPlaceholder = new MotorEx(ahwMap, "forwardBackwardOdo", 8192,10000);
+        forwardBackwardOdo = xAxisOdoPlaceholder.encoder;
+        forwardBackwardOdo.reset();
 
         //init servos
         servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);

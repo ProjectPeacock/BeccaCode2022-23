@@ -125,10 +125,8 @@ public class SingleDriverTeleop extends LinearOpMode {
             */
 
             liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);
-            robot.motorLiftFront.setTargetPosition(liftPos);
-            robot.motorLiftRear.setTargetPosition(liftPos);
-            robot.motorLiftFront.setPower(liftPower);
-            robot.motorLiftRear.setPower(liftPower);
+            robot.winch.setTargetPosition(liftPos);
+            robot.winch.set(liftPower);
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
@@ -139,14 +137,8 @@ public class SingleDriverTeleop extends LinearOpMode {
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
-            telemetry.addData("dpad_up = ", gp1.getButton(GamepadKeys.Button.DPAD_UP));
-            telemetry.addData("dpad_down = ", gp1.getButton(GamepadKeys.Button.DPAD_DOWN));
-            telemetry.addData("dpad_left = ", gp1.getButton(GamepadKeys.Button.DPAD_LEFT));
-            telemetry.addData("dpad_right = ", gp1.getButton(GamepadKeys.Button.DPAD_RIGHT));
-            telemetry.addData("Left Stick X = ", gp1.getLeftX());
-            telemetry.addData("Left Stick Y = ", gp1.getLeftY());
-            telemetry.addData("Right Stick X = ", gp1.getRightX());
-            telemetry.addData("Right Stick Y = ", gp1.getRightY());
+            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
+            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getPosition()/(2*Math.PI*0.7480314960629921));
             telemetry.update();
 
         }   // end of while(opModeIsActive)

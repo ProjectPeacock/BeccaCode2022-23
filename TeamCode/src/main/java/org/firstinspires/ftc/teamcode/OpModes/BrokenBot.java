@@ -78,9 +78,9 @@ public class BrokenBot extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad2.right_trigger>0.1) {
-                robot.autoLight.setPower(-gamepad2.right_trigger);
+                robot.autoLight.set(-1);
             }else{
-                robot.autoLight.setPower(0);
+                robot.autoLight.set(0);
             }
             if(fieldCentric){
                 robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
@@ -157,10 +157,8 @@ public class BrokenBot extends LinearOpMode {
 
             liftPosition = Range.clip(liftPosition, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);
 
-            robot.motorLiftFront.setTargetPosition(liftPosition);
-            robot.motorLiftRear.setTargetPosition(liftPosition);
-            robot.motorLiftFront.setPower(liftPower);
-            robot.motorLiftRear.setPower(liftPower);
+            robot.winch.setTargetPosition(liftPosition);
+            robot.winch.set(liftPower);
 
             // Provide user feedback
             telemetry.addData("A:", "Lift Reset");
@@ -176,6 +174,8 @@ public class BrokenBot extends LinearOpMode {
             telemetry.addData("Left Stick Y = ", gp1.getLeftY());
             telemetry.addData("Right Stick X = ", gp1.getRightX());
             telemetry.addData("Right Stick Y = ", gp1.getRightY());
+            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getPosition());
+            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getPosition());
             telemetry.update();
 
             // post telemetry to FTC Dashboard as well
@@ -197,6 +197,8 @@ public class BrokenBot extends LinearOpMode {
             dashTelemetry.put("16 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
             dashTelemetry.put("17 - motorLiftFront position = ", robot.motorLiftFront.getCurrentPosition());
             dashTelemetry.put("18 - motorLiftRear position = ", robot.motorLiftFront.getCurrentPosition());
+            dashTelemetry.put("19 - x axis odometry = ", robot.sideSideOdo.getPosition());
+            dashTelemetry.put("20 - y axis odometry = ", robot.forwardBackwardOdo.getPosition());
             dashboard.sendTelemetryPacket(dashTelemetry);
 
         }   // end of while(opModeIsActive)
