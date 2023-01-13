@@ -24,9 +24,7 @@ public class SingleDriverTeleop extends LinearOpMode {
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
-        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.B);
-        ButtonReader xReader = new ButtonReader(gp1, GamepadKeys.Button.X);
-        ButtonReader yReader = new ButtonReader(gp1, GamepadKeys.Button.Y);
+        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
         ButtonReader liftResetButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
@@ -34,7 +32,7 @@ public class SingleDriverTeleop extends LinearOpMode {
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
-        boolean clawToggle=false, clawReady=false;
+        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
         int liftPos=0;
@@ -64,6 +62,23 @@ public class SingleDriverTeleop extends LinearOpMode {
                     forwardPower*=robot.ANTI_TIP_ADJ;
                 }
             }
+            if(bReader.isDown()&&slowReady){
+                slowToggle=!slowToggle;
+            }
+
+            if(!bReader.isDown()){
+                slowReady=true;
+            }else{
+                slowReady=false;
+            }
+            if (slowToggle) {
+                forwardPower*=0.5;
+                strafePower*=0.5;
+            } else {
+                forwardPower*=1;
+                strafePower*=1;
+            }
+
 
             //mecanum drive setups
             if(robot.fieldCentric){
@@ -105,10 +120,11 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
 
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1) {
-                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*0.5;
-            }
-            if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
+                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
+            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
                 liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+            }else{
+                liftPower=0;
             }
 
 
@@ -124,8 +140,7 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
             */
 
-            liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);
-            robot.winch.setTargetPosition(liftPos);
+            liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);;
             robot.winch.set(liftPower);
 
             // Provide user feedback

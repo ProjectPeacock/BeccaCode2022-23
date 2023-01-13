@@ -22,7 +22,7 @@ public class HWProfile {
 
     //drive constants
     public final double MAX_DRIVE_POWER =1;
-    public final double TURN_MULTIPLIER = 0.5;
+    public final double TURN_MULTIPLIER = 0.75;
     public final double STRAFE_FACTOR = 0.75;
 
     //anti-tip constants
@@ -113,7 +113,7 @@ public class HWProfile {
         winch = new MotorGroup(motorLiftFront,motorLiftRear);
         winch.setPositionCoefficient(LIFT_KP);
         winch.setTargetPosition(0);
-        winch.setRunMode(Motor.RunMode.PositionControl);
+        winch.setRunMode(Motor.RunMode.RawPower);
         winch.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         winch.stopMotor();
         winch.resetEncoder();
