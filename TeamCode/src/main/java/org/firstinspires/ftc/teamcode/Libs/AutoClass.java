@@ -31,8 +31,8 @@ public class AutoClass {
      *  -   reset the lift to starting position
      */
     public void liftReset(){
-        robot.winch.setTargetPosition(robot.LIFT_RESET);
-        robot.winch.set(robot.LIFT_DOWN_POWER);
+        robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
+        robot.winch.set(robot.LIFT_POW);
     }
 
     /**

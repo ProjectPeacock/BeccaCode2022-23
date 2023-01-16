@@ -25,12 +25,11 @@ public class BrokenBot extends LinearOpMode {
     FtcDashboard dashboard;
     public static double l1_CLAW_OPEN = robot.CLAW_OPEN;
     public static double l2_CLAW_CLOSE = robot.CLAW_CLOSE;
-    public static int l3_LIFT_JUNCTION_HIGH = robot.LIFT_JUNCTION_HIGH;
-    public static int l4_LIFT_JUNCTION_MID = robot.LIFT_JUNCTION_MID;
-    public static int l5_LIFT_JUNCTION_LOW = robot.LIFT_JUNCTION_LOWER;
+    public static int l3_LIFT_JUNCTION_HIGH = robot.LIFT_HIGH;
+    public static int l4_LIFT_JUNCTION_MID = robot.LIFT_MID;
+    public static int l5_LIFT_JUNCTION_LOW = robot.LIFT_LOW;
     public static int l6_LIFT_POSITION = 0;
-    public static double l7_Lift_Up_Power = robot.LIFT_UP_POWER;
-    public static double l8_Lift_Down_Power = robot.LIFT_DOWN_POWER;
+    public static double l7_Lift_Up_Power = robot.LIFT_POW;
 
     @Override
     public void runOpMode() {
@@ -122,7 +121,7 @@ public class BrokenBot extends LinearOpMode {
 
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
                 liftPosition = liftPosition - 10;
-                liftPower = l8_Lift_Down_Power;
+                liftPower = l7_Lift_Up_Power;
 
             } else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
                 liftPosition = liftPosition + 10;
@@ -131,8 +130,8 @@ public class BrokenBot extends LinearOpMode {
             }
 
             if(gp1.isDown(GamepadKeys.Button.A)){
-                liftPosition = robot.LIFT_RESET;
-                liftPower = l8_Lift_Down_Power;
+                liftPosition = robot.LIFT_BOTTOM;
+                liftPower = l7_Lift_Up_Power;
             }
 
             if(gp1.isDown(GamepadKeys.Button.B)){
@@ -155,7 +154,7 @@ public class BrokenBot extends LinearOpMode {
                 liftPower = l7_Lift_Up_Power;
             }
 
-            liftPosition = Range.clip(liftPosition, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);
+            liftPosition = Range.clip(liftPosition, robot.LIFT_BOTTOM, robot.MAX_LIFT_VALUE);
 
             robot.winch.setTargetPosition(liftPosition);
             robot.winch.set(liftPower);

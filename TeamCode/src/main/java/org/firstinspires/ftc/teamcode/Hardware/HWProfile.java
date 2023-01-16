@@ -34,19 +34,14 @@ public class HWProfile {
     final public double USD_COUNTS_PER_INCH = 23.7;
 
     //lift constants
-    final public double LIFT_POS_COEF = 0.05;
+    final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1275;
-    final public int LIFT_RESET = 0;
-    final public int LIFT_JUNCTION_LOWER = 400;
-    final public int LIFT_JUNCTION_MID = 850;
-    final public int LIFT_JUNCTION_HIGH = 1200;
-    final public int LIFT_CONE5 = 800;
-    final public int LIFT_CONE4 = 600;
-    final public int LIFT_CONE3 = 400;
-    final public int LIFT_CONE2 = 200;
-    final public double LIFT_UP_POWER = 1;
-    final public double LIFT_DOWN_POWER = 0.5;
-    final public double LIFT_KP=0.05;
+    final public int LIFT_BOTTOM=0;
+    final public int LIFT_LOW=400;
+    final public int LIFT_MID=850;
+    final public int LIFT_HIGH=1200;
+    final public double LIFT_KP=0.0225;
+    final public int LIFT_TOL=10;
 
     final public double PARK_TIME = 27;     // sets the time for when the robot needs to park in auto
 
@@ -113,7 +108,9 @@ public class HWProfile {
         winch = new MotorGroup(motorLiftFront,motorLiftRear);
         winch.setPositionCoefficient(LIFT_KP);
         winch.setTargetPosition(0);
-        winch.setRunMode(Motor.RunMode.RawPower);
+        winch.setRunMode(Motor.RunMode.PositionControl);
+        winch.setPositionTolerance(LIFT_TOL);
+        winch.setPositionCoefficient(LIFT_KP);
         winch.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         winch.stopMotor();
         winch.resetEncoder();

@@ -140,7 +140,7 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
             */
 
-            liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);;
+            liftPos = Range.clip(liftPos, robot.LIFT_BOTTOM, robot.MAX_LIFT_VALUE);;
             robot.winch.set(liftPower);
 
             // Provide user feedback

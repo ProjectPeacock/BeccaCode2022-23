@@ -17,6 +17,11 @@ import java.util.List;
 
 public class FSMSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
+    public enum LiftState {
+        LIFT_START,
+        LIFT_RUNNING,
+    };
+    FSMLiftTest.LiftState liftState= FSMLiftTest.LiftState.LIFT_START;
 
     @Override
     public void runOpMode() {
@@ -25,7 +30,6 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
         GamepadEx gp1 = new GamepadEx(gamepad1);
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
         ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
-        ButtonReader liftResetButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -48,6 +52,34 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            switch(liftState) {
+                case LIFT_START:
+                    if (gp1.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+                        robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
+                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
+                    } else if (gp1.isDown(GamepadKeys.Button.B)) {
+                        robot.winch.setTargetPosition(robot.LIFT_LOW);
+                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
+                    } else if (gp1.isDown(GamepadKeys.Button.X)) {
+                        robot.winch.setTargetPosition(robot.LIFT_MID);
+                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
+                    } else if (gp1.isDown(GamepadKeys.Button.Y)) {
+                        robot.winch.setTargetPosition(robot.LIFT_HIGH);
+                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
+                    }
+                    break;
+
+                case LIFT_RUNNING:
+                    while (!robot.winch.atTargetPosition()) {
+                        robot.winch.set(robot.LIFT_POW);
+                    }
+                    robot.winch.stopMotor();
+                    liftState= FSMLiftTest.LiftState.LIFT_START;
+                    break;
+
+                default:
+                    liftState = FSMLiftTest.LiftState.LIFT_START;
+            }
             forwardPower=gp1.getLeftY();
             strafePower=gp1.getLeftX();
 
@@ -89,18 +121,6 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
                 robot.mecanum.driveRobotCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
             }
 
-            //lift power (take analog from triggers, apply to variable, variable gets applied to motors
-
-            /*
-            if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
-                liftPower=gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
-                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
-            }else{
-                liftPower=0;
-            }
-
-             */
 
             //claw control
             if(aReader.isDown()&&clawReady){
@@ -119,6 +139,7 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
                 robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
 
+            /*rawPower lift control
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1) {
                 liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
             }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
@@ -126,22 +147,9 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
             }else{
                 liftPower=0;
             }
+             */
 
 
-            /*
-            if(xReader.isDown()){
-                liftPos=robot.JUNCTION_LOWER;
-            }else if(yReader.isDown()) {
-                liftPos=robot.JUNCTION_MID;
-            }else if(bReader.isDown()){
-                liftPos=robot.JUNCTION_HIGH;
-            }else if(liftResetButton.isDown()){
-                liftPos = 0;
-            }
-            */
-
-            liftPos = Range.clip(liftPos, robot.LIFT_RESET, robot.MAX_LIFT_VALUE);;
-            robot.winch.set(liftPower);
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
