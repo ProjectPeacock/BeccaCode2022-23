@@ -21,18 +21,25 @@ public class AutoClass {
     }   // close AutoClass constructor Method
 
 
-    public void liftPosition(int position, double power){
-        robot.winch.setTargetPosition(position);
-        robot.winch.set(power);
-    }
-
     /**
      * Method: liftReset
      *  -   reset the lift to starting position
      */
-    public void liftReset(){
-        robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
-        robot.winch.set(robot.LIFT_POW);
+    public void moveLift(int pos){
+        robot.winch.set(0);
+        if(pos==0){
+            robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
+        }else if(pos==1){
+            robot.winch.setTargetPosition(robot.LIFT_LOW);
+        }else if(pos==2){
+            robot.winch.setTargetPosition(robot.LIFT_MID);
+        }else if(pos==3){
+            robot.winch.setTargetPosition(robot.LIFT_HIGH);
+        }
+        while(!robot.winch.atTargetPosition()){
+            robot.winch.set(1);
+        }
+        robot.winch.stopMotor();
     }
 
     /**

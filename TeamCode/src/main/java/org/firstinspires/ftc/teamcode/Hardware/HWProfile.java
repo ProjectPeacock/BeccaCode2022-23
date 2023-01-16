@@ -38,7 +38,7 @@ public class HWProfile {
     final public int MAX_LIFT_VALUE = 1275;
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=400;
-    final public int LIFT_MID=850;
+    final public int LIFT_MID=875;
     final public int LIFT_HIGH=1200;
     final public double LIFT_KP=0.0225;
     final public int LIFT_TOL=10;

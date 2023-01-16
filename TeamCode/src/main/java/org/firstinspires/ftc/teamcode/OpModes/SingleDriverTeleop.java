@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -26,6 +27,8 @@ public class SingleDriverTeleop extends LinearOpMode {
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
         ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
         ButtonReader liftResetButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
+
+        robot.winch.setRunMode(Motor.RunMode.RawPower);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
