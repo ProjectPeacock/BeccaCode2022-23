@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
 import java.util.List;
 
-@TeleOp(name = "Single Driver Teleop Mode", group = "Competition")
+@TeleOp(name = "FSM Single Driver Teleop Mode", group = "Competition")
 
 public class FSMSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();

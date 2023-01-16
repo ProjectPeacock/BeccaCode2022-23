@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Config
-@TeleOp(name = "Lift Test", group = "Competition")
+@TeleOp(name = "FSM Lift Test", group = "Competition")
 //@Disabled
 public class FSMLiftTest extends OpMode {
     public enum LiftState {
@@ -31,7 +31,7 @@ public class FSMLiftTest extends OpMode {
     public static int LIFT_LOW=100;
     public static int LIFT_MID=500;
     public static int LIFT_HIGH=800;
-    public static double LIFT_KP=0.005;
+    public static double LIFT_KP=0.0225;
     public static int LIFT_TOL=10;
 
     public void init(){
@@ -85,6 +85,7 @@ public class FSMLiftTest extends OpMode {
                     winch.set(1);
                 }
                 winch.stopMotor();
+                liftState=LiftState.LIFT_START;
                 break;
 
             default:
