@@ -113,7 +113,7 @@ public class BlueTerminalAuto extends LinearOpMode {
 
             //retrieve cone
                 .addTemporalMarker(0, ()->{
-                    liftControl.moveLiftGrab(1);
+                    liftControl.moveLiftGrab();
                     liftControl.closeClaw();
                 })
             .waitSeconds(0.5)
@@ -141,7 +141,7 @@ public class BlueTerminalAuto extends LinearOpMode {
 
                 //grab next cone
                 .addTemporalMarker(0, ()->{
-                    liftControl.moveLiftGrab(1);
+                    liftControl.moveLiftGrab();
                     liftControl.closeClaw();
                 })
                 .waitSeconds(0.5)

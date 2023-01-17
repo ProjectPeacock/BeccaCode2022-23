@@ -14,7 +14,8 @@ public class AutoClass {
     public double RF, LF, LR, RR;
     public LinearOpMode opMode;
     ElapsedTime runTime = new ElapsedTime();
-
+    public int cyclesRun=0;
+    AutoParams params = new AutoParams();
 
     /*
      * Constructor method
@@ -55,26 +56,27 @@ public class AutoClass {
     }
 
     //method for moving lift to retrieve cones
-    //cycle corresponds to what number cycle the robot is on
-    public void moveLiftGrab(int cycle){
+    //cyclesRun corresponds to how many cycles have been completed. This class keeps track of how many cycles have been completed internally
+    public void moveLiftGrab(){
+
         robot.winch.set(0);
-        if(cycle==1){
-            robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
-        }else if(cycle==2){
-            robot.winch.setTargetPosition(robot.LIFT_LOW);
-        }else if(cycle==3){
-            robot.winch.setTargetPosition(robot.LIFT_MID);
-        }else if(cycle==4){
-            robot.winch.setTargetPosition(robot.LIFT_HIGH);
-        }
-        else if(cycle==5){
-            robot.winch.setTargetPosition(robot.LIFT_HIGH);
+        if(cyclesRun==0){
+            robot.winch.setTargetPosition(params.cycle1);
+        }else if(cyclesRun==1){
+            robot.winch.setTargetPosition(params.cycle2);
+        }else if(cyclesRun==2){
+            robot.winch.setTargetPosition(params.cycle3);
+        }else if(cyclesRun==3){
+            robot.winch.setTargetPosition(params.cycle4);
+        }else if(cyclesRun==4){
+            robot.winch.setTargetPosition(params.cycle5);
         }
 
         while(!robot.winch.atTargetPosition()){
             robot.winch.set(1);
         }
         robot.winch.stopMotor();
+        cyclesRun++;
     }
 
     //claw control methods

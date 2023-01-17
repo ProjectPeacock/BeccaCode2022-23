@@ -6,12 +6,20 @@ public class AutoParams {
     PARAMETER MAP - PLEASE READ BEFORE EDITING
 
     This file contains all the parameters for BlueTerminalAuto and RedTerminalAuto.
+    This file also contains all Lift encoder values for cone retrieval from the stack.
 
-    If making a new auto, include "utoParams params = new AutoParams();" within the class.
+    If making a new auto, include "AutoParams params = new AutoParams();" within the class.
 
     All headings are converted to radians here, so there is no need to convert them in the main autonomous programs.
 
      */
+
+    //lift hieghts for grabbing cones from stack
+    public final int cycle1=10;
+    public final int cycle2=20;
+    public final int cycle3=30;
+    public final int cycle4=40;
+    public final int cycle5=50;
 
     //staring pose X and Y
     public final double startPoseX=-64;
