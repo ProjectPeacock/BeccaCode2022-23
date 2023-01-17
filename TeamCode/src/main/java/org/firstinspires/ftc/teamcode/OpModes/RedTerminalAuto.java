@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
-@Autonomous(name = "Auto: Red Terminal", group = "Competition")
+@Autonomous(name = "Auto: Blue Terminal", group = "Competition")
 public class RedTerminalAuto extends LinearOpMode {
     /*
 
@@ -52,7 +52,7 @@ public class RedTerminalAuto extends LinearOpMode {
             "AfHl2GP/////AAABmeJc93xOhk1MvZeKbP5E43taYJ6kodzkhsk5wOLGwZI3wxf7v1iTx2Mem/VZSEtpxb3U2fMO7n0EUxSeHRWhOXeX16dMFcjfalezjo3ZkzBuG/y2r4kgLwKs4APyAIClBAon+tf/W/4NkTkYuHGo8zZ0slH/iBpqxvblpNURsG5h4VxPFgF5D/FIfmjnddzQpa4cGarle/Zvuah6q2orUswun31P6ZLuIJvdOIQf7o/ruoRygsSXfVYc35w+Xwm+bwjpZUNzHHYvRNrp0HNWC3Fr2hd0TqWKIIYlCoHj0m5OKX22Ris23V8PdKM/i4/ZIy8JewJXetv1rERC5bfHmUXCS4Rl7RjR+ZscQ5aA0nr8";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
-    double parkPosition = 3;
+    double parkPosition = 2;
 
     @Override
     public void runOpMode() {
@@ -75,48 +75,60 @@ public class RedTerminalAuto extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        Pose2d startPose= new Pose2d(params.startPoseX,-params.startPoseY);
+        Pose2d startPose= new Pose2d(-params.startPoseX,params.startPoseY);
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
-            //close claw to grab preload
-            .addTemporalMarker(0, ()->{
-                liftControl.closeClaw();
-            })
-
-            //navigate to mid pole
-            .splineTo(new Vector2d(params.preloadMidX,-params.preloadMidY),-params.preloadMidHeading)
-
-            //lift lift
-            .addTemporalMarker(0, ()->{
-                liftControl.moveLiftScore(2);
-            })
-
-            //final alignment with mid pole
-            .forward(params.preloadMidForward)
-
-            //wait for claw to open
-            .addTemporalMarker(0, ()->{
-                liftControl.openClaw();
-            })
-            .waitSeconds(0.25)
-
-            //leave main pole
-            .back(params.preloadMidBackward)
-
-            //orient to avoid poles
-            .turn(-params.preloadReorientHeading)
-
-            //drive to cone stack
-            .splineTo(new Vector2d(params.preloadWaypointX,-params.preloadWaypointY),-params.preloadWaypointHeading)
-            .forward(14.5)
-
-            //retrieve cone
+                //close claw to grab preload
                 .addTemporalMarker(0, ()->{
-                    liftControl.moveLiftGrab();
                     liftControl.closeClaw();
                 })
-            .waitSeconds(0.5)
+
+                //navigate to mid pole
+                .splineTo(new Vector2d(-params.preloadMidX,params.preloadMidY),params.preloadMidHeading/2)
+
+                //lift lift
+                .addTemporalMarker(0, ()->{
+                    liftControl.moveLiftScore(2);
+                })
+
+                //align to mid pole
+                .forward(params.preloadMidForward)
+
+                //wait for claw to open
+                .addTemporalMarker(0, ()->{
+                    liftControl.openClaw();
+                })
+                .waitSeconds(params.timeOpen)
+
+                //leave main pole
+                .back(params.preloadMidBackward)
+
+                //lower lift
+                .addTemporalMarker(0, ()->{
+                    liftControl.moveLiftScore(0);
+                })
+
+                //orient to avoid poles
+                .turn(-params.preloadReorientHeading)
+
+                //drive to cone stack
+                .splineTo(new Vector2d(-params.preloadWaypointX,params.preloadWaypointY),params.preloadWaypointHeading)
+                .forward(params.cycle1coneStackForward)
+
+                //raise lift to cone height
+                .addTemporalMarker(0, ()->{
+                    liftControl.moveLiftGrab();
+                })
+
+                //drive to cone stack
+                .forward(params.cycle1coneStackForward)
+
+                //grab cone
+                .addTemporalMarker(0, ()->{
+                    liftControl.closeClaw();
+                })
+                .waitSeconds(params.timeClose)
                 .build();
 
         TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
@@ -124,62 +136,87 @@ public class RedTerminalAuto extends LinearOpMode {
                 .back(params.coneStackReverse)
 
                 //spline to mid pole
-                .splineToSplineHeading(new Pose2d(params.cycleMidX,-params.cycleMidY,-params.cycleMidHeading),-params.cycleMidEndHeading)
+                .lineToSplineHeading(new Pose2d(-params.cycleMidX,params.cycleMidY, params.cycleMidHeading))
+
+                //raise lift
+                .addTemporalMarker(0, ()->{
+                    liftControl.moveLiftScore(2);
+                })
+
+                //final pole approach
+                .forward(params.cycleMidForward)
 
                 //drop cone
                 .addTemporalMarker(0, ()->{
                     liftControl.openClaw();
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(params.timeOpen)
 
                 //back from pole
                 .back(params.cycleMidReverse)
 
+                //lower lift
+                .addTemporalMarker(0, ()->{
+                    liftControl.moveLiftScore(0);
+                })
+
                 //return to stack
-                .splineToSplineHeading(new Pose2d(params.coneStackAlignX,-params.coneStackAlignY,-params.coneStackAlignHeading),-params.coneStackAlignEndHeading)
+                .lineToSplineHeading(new Pose2d(-params.coneStackAlignX,params.coneStackAlignY,params.coneStackAlignHeadingRed))
                 .forward(params.coneStackForward)
 
-                //grab next cone
+                //raise lift to cone height
                 .addTemporalMarker(0, ()->{
                     liftControl.moveLiftGrab();
+                })
+
+                //drive to cone stack
+                .forward(params.coneStackForward)
+
+                //grab cone
+                .addTemporalMarker(0, ()->{
                     liftControl.closeClaw();
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(params.timeClose)
                 .build();
 
         TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
-            //back away from stack
-            .back(params.coneStackReverse)
+                //back away from stack
+                .back(params.coneStackReverse)
 
-            //spline to high pole
-            .splineToSplineHeading(new Pose2d(params.cycleHighX,-params.cycleHighY,-params.cycleHighHeading),-params.cycleHighEndHeading)
+                //spline to high pole
+                .lineToSplineHeading(new Pose2d(-params.cycleHighX,params.cycleHighY,params.cycleHighHeading))
 
-            //drop cone
+                //raise lift
+                .addTemporalMarker(0.25, ()->{
+                    liftControl.moveLiftScore(3);
+                })
+
+                //final pole approach
+                .forward(params.cycleHighForward)
+
+                //drop cone
                 .addTemporalMarker(0, ()->{
                     liftControl.openClaw();
                 })
-            .waitSeconds(0.5)
-            .build();
+                .waitSeconds(params.timeOpen)
+
+                //back from pole
+                .back(params.cycleHighReverse)
+
+                .build();
 
         //parking position 1
         TrajectorySequence park1= drive.trajectorySequenceBuilder(cycleHigh.end())
-            .back(params.park1Reverse)
-            .splineToSplineHeading(new Pose2d(params.park1X,-params.park1Y,params.park1Heading),params.park1EndHeading)
-            .build();
+                .strafeLeft(params.park36Inch)
+                .build();
 
-        //parking position 2
-        TrajectorySequence park2= drive.trajectorySequenceBuilder(cycleHigh.end())
-            .back(params.park2Reverse)
-            .turn(-params.park2HeadingAdjust)
-            .build();
+        //parking position 2 just stays where highCycle ends
+
 
         //parking position 3
         TrajectorySequence park3= drive.trajectorySequenceBuilder(cycleHigh.end())
-            .back(params.park3Reverse)
-            .splineToSplineHeading(new Pose2d(params.park3X,-params.park3Y,-params.park3Heading),-params.park3EndHeading)
-            .forward(params.park3Forward)
-            .turn(-params.park3Turn)
-            .build();
+                .strafeRight(params.park12Inch)
+                .build();
 
         while(!opModeIsActive()) {
             if (tfod != null) {
@@ -201,13 +238,8 @@ public class RedTerminalAuto extends LinearOpMode {
                         telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                         telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                         telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
-             /*           if(recognition.getLabel() == "1 Bolt"){
-                            position =1;
-                        } else if(recognition.getLabel() == "2 Bulb" ){
-                            position = 2;
-                        } else position = 3;
-               */
-                        // make Qrcode the default, least reliable
+
+
                         if(recognition.getLabel() == "circle"){
                             parkPosition = 1;
                         } else if(recognition.getLabel() == "star" ){
@@ -239,7 +271,7 @@ public class RedTerminalAuto extends LinearOpMode {
         if(parkPosition==1){
             drive.followTrajectorySequence(park1);
         }else if(parkPosition==2){
-            drive.followTrajectorySequence(park2);
+
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }

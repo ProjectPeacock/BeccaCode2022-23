@@ -19,11 +19,11 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(89.236, 90, 17.927212540948645, Math.toRadians(360), 11.42)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-64,35.25,Math.toRadians(0)))
-                                //initial alignment with mid pole
-                                .splineTo(new Vector2d(-36,30.5),Math.toRadians(-30))
+                        drive.trajectorySequenceBuilder(new Pose2d(35.25,-64, Math.toRadians(90)))
+                                //drive to mid pole
+                                .splineTo(new Vector2d(30.5,-36),Math.toRadians(120))
 
-                                //final alignment with mid pole
+                                //align to pole
                                 .forward(4)
 
                                 //wait for claw to open
@@ -33,81 +33,68 @@ public class MeepMeepTesting {
                                 .back(8)
 
                                 //orient to avoid poles
-                                .turn(Math.toRadians(60))
+                                .turn(Math.toRadians(-40))
 
                                 //drive to cone stack
-                                .splineTo(new Vector2d(-12,45),Math.toRadians(-270))
+                                .splineTo(new Vector2d(45,-12),Math.toRadians(0))
                                 .forward(14.5)
 
                                 //retrieve cone
-                                .waitSeconds(0.5)
+                                .waitSeconds(0.35)
 
-                                // cycle 1
+                                //mid cycle
                                 .back(12)
-                                .splineToSplineHeading(new Pose2d(-16,32.5,Math.toRadians(-130)),Math.toRadians(-270))
-                                .waitSeconds(0.5)
-                                .back(6)
-                                .splineToSplineHeading(new Pose2d(-12,45,Math.toRadians(-270)),Math.toRadians(-270))
-                                .forward(14.5)
-                                .waitSeconds(0.5)
+                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
+                                .forward(4)
+                                .back(4)
+                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
+                                .forward(3.5)
+                                .waitSeconds(0.35)
 
-                                // cycle 2
                                 .back(12)
-                                .splineToSplineHeading(new Pose2d(-16,32.5,Math.toRadians(-130)),Math.toRadians(-270))
-                                .waitSeconds(0.5)
-                                .back(6)
-                                .splineToSplineHeading(new Pose2d(-12,45,Math.toRadians(-270)),Math.toRadians(-270))
-                                .forward(14.5)
-                                .waitSeconds(0.5)
+                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
+                                .forward(4)
+                                .back(4)
+                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
+                                .forward(3.5)
+                                .waitSeconds(0.35)
 
-                                // cycle 3
                                 .back(12)
-                                .splineToSplineHeading(new Pose2d(-16,32.5,Math.toRadians(-130)),Math.toRadians(-270))
-                                .waitSeconds(0.5)
-                                .back(6)
-                                .splineToSplineHeading(new Pose2d(-12,45,Math.toRadians(-270)),Math.toRadians(-270))
-                                .forward(14.5)
-                                .waitSeconds(0.5)
+                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
+                                .forward(4)
+                                .back(4)
+                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
+                                .forward(3.5)
+                                .waitSeconds(0.35)
 
-                                // cycle 4
                                 .back(12)
-                                .splineToSplineHeading(new Pose2d(-16,32.5,Math.toRadians(-130)),Math.toRadians(-270))
-                                .waitSeconds(0.5)
-                                .back(6)
-                                .splineToSplineHeading(new Pose2d(-12,45,Math.toRadians(-270)),Math.toRadians(-270))
-                                .forward(14.5)
-                                .waitSeconds(0.5)
+                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
+                                .forward(4)
+                                .back(4)
+                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
+                                .forward(3.5)
+                                .waitSeconds(0.35)
 
-                                // cycle 5
+
+                                //high cycle
                                 .back(12)
-                                .splineToSplineHeading(new Pose2d(-8,30.5,Math.toRadians(-40)),Math.toRadians(-270))
-                                .waitSeconds(0.5)
+                                .lineToSplineHeading(new Pose2d(24,-14,Math.toRadians(90)))
+                                .forward(4)
+                                .back(4)
+                                .waitSeconds(0.35)
 
                                 //park 1
-
-                                .back(3)
-                                .splineToSplineHeading(new Pose2d(-12,12,Math.toRadians(0)),Math.toRadians(90))
-
-
-                                //park 2
-                                /*
-                                .back(8)
-                                .turn(Math.toRadians(40);
-                                 */
+                                .strafeLeft(12)
 
                                 //park 3
-                                /*
-                                .back(6)
-                                .splineToSplineHeading(new Pose2d(-12,45,Math.toRadians(-270)),Math.toRadians(-270))
-                                .forward(14.5)
-                                .turn(Math.toRadians(-90))
-                                 */
+                                //.strafeRight(12)
+
 
 
                                 .build()
                 );
 
-        meepMeep.setBackground(ImageIO.read(new URL("https://raw.githubusercontent.com/ProjectPeacock/BeccaCode2022-23/main/MeepMeepTesting/PowerPlayField.png")))
+        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
