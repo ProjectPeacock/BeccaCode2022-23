@@ -102,4 +102,6 @@ public class AutoParams {
     //park 3 forward dist
     public final double park3Forward=14.5;
 
+    //park 3 turn amount
+    public final double park3Turn=Math.toRadians(90);
 }

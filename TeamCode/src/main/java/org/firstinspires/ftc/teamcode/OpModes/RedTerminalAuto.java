@@ -75,7 +75,7 @@ public class RedTerminalAuto extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY);
+        Pose2d startPose= new Pose2d(params.startPoseX,-params.startPoseY);
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
@@ -85,7 +85,7 @@ public class RedTerminalAuto extends LinearOpMode {
             })
 
             //navigate to mid pole
-            .splineTo(new Vector2d(params.preloadMidX,params.preloadMidY),params.preloadMidHeading)
+            .splineTo(new Vector2d(params.preloadMidX,-params.preloadMidY),-params.preloadMidHeading)
 
             //lift lift
             .addTemporalMarker(0, ()->{
@@ -105,10 +105,10 @@ public class RedTerminalAuto extends LinearOpMode {
             .back(params.preloadMidBackward)
 
             //orient to avoid poles
-            .turn(params.preloadReorientHeading)
+            .turn(-params.preloadReorientHeading)
 
             //drive to cone stack
-            .splineTo(new Vector2d(params.preloadWaypointX,params.preloadWaypointY),params.preloadWaypointHeading)
+            .splineTo(new Vector2d(params.preloadWaypointX,-params.preloadWaypointY),-params.preloadWaypointHeading)
             .forward(14.5)
 
             //retrieve cone
@@ -124,7 +124,7 @@ public class RedTerminalAuto extends LinearOpMode {
                 .back(params.coneStackReverse)
 
                 //spline to mid pole
-                .splineToSplineHeading(new Pose2d(params.cycleMidX,params.cycleMidY, params.cycleMidHeading),params.cycleMidEndHeading)
+                .splineToSplineHeading(new Pose2d(params.cycleMidX,-params.cycleMidY,-params.cycleMidHeading),-params.cycleMidEndHeading)
 
                 //drop cone
                 .addTemporalMarker(0, ()->{
@@ -136,7 +136,7 @@ public class RedTerminalAuto extends LinearOpMode {
                 .back(params.cycleMidReverse)
 
                 //return to stack
-                .splineToSplineHeading(new Pose2d(params.coneStackAlignX,params.coneStackAlignY,params.coneStackAlignHeading),params.coneStackAlignEndHeading)
+                .splineToSplineHeading(new Pose2d(params.coneStackAlignX,-params.coneStackAlignY,-params.coneStackAlignHeading),-params.coneStackAlignEndHeading)
                 .forward(params.coneStackForward)
 
                 //grab next cone
@@ -152,7 +152,7 @@ public class RedTerminalAuto extends LinearOpMode {
             .back(params.coneStackReverse)
 
             //spline to high pole
-            .splineToSplineHeading(new Pose2d(params.cycleHighX,params.cycleHighY,params.cycleHighHeading),params.cycleHighEndHeading)
+            .splineToSplineHeading(new Pose2d(params.cycleHighX,-params.cycleHighY,-params.cycleHighHeading),-params.cycleHighEndHeading)
 
             //drop cone
                 .addTemporalMarker(0, ()->{
@@ -164,20 +164,21 @@ public class RedTerminalAuto extends LinearOpMode {
         //parking position 1
         TrajectorySequence park1= drive.trajectorySequenceBuilder(cycleHigh.end())
             .back(params.park1Reverse)
-            .splineToSplineHeading(new Pose2d(params.park1X,params.park1Y,params.park1Heading),params.park1EndHeading)
+            .splineToSplineHeading(new Pose2d(params.park1X,-params.park1Y,params.park1Heading),params.park1EndHeading)
             .build();
 
         //parking position 2
         TrajectorySequence park2= drive.trajectorySequenceBuilder(cycleHigh.end())
             .back(params.park2Reverse)
-            .turn(params.park2HeadingAdjust)
+            .turn(-params.park2HeadingAdjust)
             .build();
 
         //parking position 3
         TrajectorySequence park3= drive.trajectorySequenceBuilder(cycleHigh.end())
             .back(params.park3Reverse)
-            .splineToSplineHeading(new Pose2d(params.park3X,params.park3Y,params.park3Heading),params.park3EndHeading)
+            .splineToSplineHeading(new Pose2d(params.park3X,-params.park3Y,-params.park3Heading),-params.park3EndHeading)
             .forward(params.park3Forward)
+            .turn(-params.park3Turn)
             .build();
 
         while(!opModeIsActive()) {

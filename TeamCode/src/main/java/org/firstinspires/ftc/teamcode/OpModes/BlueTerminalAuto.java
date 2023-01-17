@@ -178,6 +178,7 @@ public class BlueTerminalAuto extends LinearOpMode {
             .back(params.park3Reverse)
             .splineToSplineHeading(new Pose2d(params.park3X,params.park3Y,params.park3Heading),params.park3EndHeading)
             .forward(params.park3Forward)
+            .turn(params.park3Turn)
             .build();
 
         while(!opModeIsActive()) {
