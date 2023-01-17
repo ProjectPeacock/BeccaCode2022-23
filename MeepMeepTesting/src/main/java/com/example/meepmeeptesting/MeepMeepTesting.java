@@ -6,15 +6,20 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
 public class MeepMeepTesting {
-    public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(600);
+    public static void main(String[] args) throws IOException {
+        MeepMeep meepMeep = new MeepMeep(600).setBackground(ImageIO.read(new URL("E:/FTC/2022-2023/BeccaCode2022-23/PowerPlayField.png")));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(89.236, 90, 17.927212540948645, Math.toRadians(360), 11.42)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-64,-35.25,Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-64,-35.25,Math.toRadians(0)))
                                 //initial alignment with mid pole
                                 .splineTo(new Vector2d(-36,-30.5),Math.toRadians(30))
 
