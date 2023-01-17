@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 public class MeepMeepTesting {
     public static void main(String[] args) throws IOException {
-        MeepMeep meepMeep = new MeepMeep(600).setBackground(ImageIO.read(new URL("E:/FTC/2022-2023/BeccaCode2022-23/PowerPlayField.png")));
+        MeepMeep meepMeep = new MeepMeep(600);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -103,7 +103,7 @@ public class MeepMeepTesting {
                                 .build()
                 );
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
+        meepMeep.setBackground(ImageIO.read(new URL("https://raw.githubusercontent.com/ProjectPeacock/BeccaCode2022-23/main/MeepMeepTesting/PowerPlayField.png")))
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
