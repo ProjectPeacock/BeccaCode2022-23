@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.Libs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
 public class AutoClass {
@@ -10,6 +14,7 @@ public class AutoClass {
     public double RF, LF, LR, RR;
     public LinearOpMode opMode;
     ElapsedTime runTime = new ElapsedTime();
+
 
     /*
      * Constructor method
@@ -25,7 +30,14 @@ public class AutoClass {
      * Method: liftReset
      *  -   reset the lift to starting position
      */
-    public void moveLift(int pos){
+
+    //method for moving lift to score and retract
+    //pos corresponds to bottom, low, mid, high
+    //0==bottom
+    //1==low
+    //2==mid
+    //3==high
+    public void moveLiftScore(int pos){
         robot.winch.set(0);
         if(pos==0){
             robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
@@ -42,19 +54,38 @@ public class AutoClass {
         robot.winch.stopMotor();
     }
 
-    /**
-     * Method: openClaw
-     *  -   open the claw
-     */
+    //method for moving lift to retrieve cones
+    //cycle corresponds to what number cycle the robot is on
+    public void moveLiftGrab(int cycle){
+        robot.winch.set(0);
+        if(cycle==1){
+            robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
+        }else if(cycle==2){
+            robot.winch.setTargetPosition(robot.LIFT_LOW);
+        }else if(cycle==3){
+            robot.winch.setTargetPosition(robot.LIFT_MID);
+        }else if(cycle==4){
+            robot.winch.setTargetPosition(robot.LIFT_HIGH);
+        }
+        else if(cycle==5){
+            robot.winch.setTargetPosition(robot.LIFT_HIGH);
+        }
 
+        while(!robot.winch.atTargetPosition()){
+            robot.winch.set(1);
+        }
+        robot.winch.stopMotor();
+    }
+
+    //claw control methods
     public void openClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_OPEN);
     }
-
     public void closeClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
     }
 
+    //method to get robot heading (used to store final heading for field-centric offset)
     private double gyro360(double targetAngle){
         double currentZ = getZAngle();
         double rotationalAngle;
@@ -76,9 +107,11 @@ public class AutoClass {
         return rotationalAngle;
     }   // end method gyro360
 
-    public double getZAngle(){
+    //support method for gyro360 method
+    private double getZAngle(){
         return (-robot.imu.getRotation2d().getDegrees());
     }   // close getZAngle method
 
 
-}   // close the driveMecanum class
+
+}   // close the AutoClass class
