@@ -16,7 +16,8 @@ public class AutoParams {
      */
 
     //number of cycles
-    public  final int numCycles=2;
+    public final int numMidCycles=1;
+    public final int numHighCycles=5-numMidCycles-1;
     //claw open time
     public final double timeOpen=0.35;
 

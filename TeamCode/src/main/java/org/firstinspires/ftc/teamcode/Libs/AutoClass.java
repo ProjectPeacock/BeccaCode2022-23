@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Libs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -12,15 +13,16 @@ public class AutoClass {
 
     private HWProfile robot;
     public double RF, LF, LR, RR;
-    public LinearOpMode opMode;
+    public OpMode opMode;
     ElapsedTime runTime = new ElapsedTime();
     public int cyclesRun=0;
+    public int targetPos=0;
     AutoParams params = new AutoParams();
 
     /*
      * Constructor method
      */
-    public AutoClass(HWProfile myRobot, LinearOpMode myOpMode){
+    public AutoClass(HWProfile myRobot, OpMode myOpMode){
         robot = myRobot;
         opMode = myOpMode;
 
@@ -39,44 +41,40 @@ public class AutoClass {
     //2==mid
     //3==high
     public void moveLiftScore(int pos){
-        robot.winch.set(0);
         if(pos==0){
-            robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
+            targetPos= robot.LIFT_BOTTOM;
         }else if(pos==1){
-            robot.winch.setTargetPosition(robot.LIFT_LOW);
+            targetPos= robot.LIFT_LOW;
         }else if(pos==2){
-            robot.winch.setTargetPosition(robot.LIFT_MID);
+            targetPos= robot.LIFT_MID;
         }else if(pos==3){
-            robot.winch.setTargetPosition(robot.LIFT_HIGH);
+            targetPos= robot.LIFT_HIGH;
         }
-        while(!robot.winch.atTargetPosition()){
-            robot.winch.set(1);
-        }
-        robot.winch.stopMotor();
     }
 
     //method for moving lift to retrieve cones
     //cyclesRun corresponds to how many cycles have been completed. This class keeps track of how many cycles have been completed internally
     public void moveLiftGrab(){
-
-        robot.winch.set(0);
         if(cyclesRun==0){
-            robot.winch.setTargetPosition(params.cycle1);
+            targetPos= params.cycle1;
         }else if(cyclesRun==1){
-            robot.winch.setTargetPosition(params.cycle2);
+            targetPos= params.cycle2;
         }else if(cyclesRun==2){
-            robot.winch.setTargetPosition(params.cycle3);
+            targetPos= params.cycle3;
         }else if(cyclesRun==3){
-            robot.winch.setTargetPosition(params.cycle4);
+            targetPos= params.cycle4;
         }else if(cyclesRun==4){
-            robot.winch.setTargetPosition(params.cycle5);
+            targetPos= params.cycle5;
         }
-
-        while(!robot.winch.atTargetPosition()){
-            robot.winch.set(1);
-        }
-        robot.winch.stopMotor();
         cyclesRun++;
+    }
+
+    public void update(){
+        if(!robot.winch.atTargetPosition()){
+            robot.winch.set(1);
+        }else{
+            robot.winch.stopMotor();
+        }
     }
 
     //claw control methods

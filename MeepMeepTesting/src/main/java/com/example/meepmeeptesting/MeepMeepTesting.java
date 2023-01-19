@@ -17,77 +17,55 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(89.236, 90, 17.927212540948645, Math.toRadians(360), 11.42)
+                .setConstraints(45, 45, 17.927212540948645, Math.toRadians(360), 11.42)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(35.25,-64, Math.toRadians(90)))
                                 //drive to mid pole
-                                .splineTo(new Vector2d(30.5,-36),Math.toRadians(120))
-
-                                //align to pole
-                                .forward(4)
-
-                                //wait for claw to open
+                                .splineTo(new Vector2d(28.5,-31),Math.toRadians(120))
                                 .waitSeconds(0.25)
+                                .turn(Math.toRadians(-60))
+                                .splineToLinearHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
+                                .waitSeconds(0.25)
+                                .back(6)
+                                .splineToSplineHeading(new Pose2d(30,-17.5,Math.toRadians(220)),Math.toRadians(190))
 
-                                //leave main pole
-                                .back(8)
+                                .waitSeconds(0.25)
+                                .back(1)
+                                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
 
-                                //orient to avoid poles
-                                .turn(Math.toRadians(-40))
+                                .waitSeconds(0.25)
+                                .back(6)
+                                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(170))
 
-                                //drive to cone stack
-                                .splineTo(new Vector2d(45,-12),Math.toRadians(0))
-                                .forward(14.5)
+                                .waitSeconds(0.25)
+                                .back(1)
+                                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
 
-                                //retrieve cone
-                                .waitSeconds(0.35)
+                                .waitSeconds(0.25)
+                                .back(6)
+                                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(170))
 
-                                //mid cycle
-                                .back(12)
-                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
-                                .forward(4)
-                                .back(4)
-                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
-                                .forward(3.5)
-                                .waitSeconds(0.35)
+                                .waitSeconds(0.25)
+                                .back(1)
+                                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
 
-                                .back(12)
-                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
-                                .forward(4)
-                                .back(4)
-                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
-                                .forward(3.5)
-                                .waitSeconds(0.35)
+                                .waitSeconds(0.25)
+                                .back(6)
+                                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(170))
 
-                                .back(12)
-                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
-                                .forward(4)
-                                .back(4)
-                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
-                                .forward(3.5)
-                                .waitSeconds(0.35)
+                                .waitSeconds(0.25)
+                                .back(1)
+                                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
 
-                                .back(12)
-                                .lineToSplineHeading(new Pose2d(24,-10,Math.toRadians(270)))
-                                .forward(4)
-                                .back(4)
-                                .lineToSplineHeading(new Pose2d(56,-12,Math.toRadians(0)))
-                                .forward(3.5)
-                                .waitSeconds(0.35)
+                                .waitSeconds(0.25)
+                                .back(6)
+                                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(170))
 
+                                .waitSeconds(0.25)
+                                .back(1)
 
-                                //high cycle
-                                .back(12)
-                                .lineToSplineHeading(new Pose2d(24,-14,Math.toRadians(90)))
-                                .forward(4)
-                                .back(4)
-                                .waitSeconds(0.35)
+                                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(90)),Math.toRadians(0))
 
-                                //park 1
-                                .strafeLeft(12)
-
-                                //park 3
-                                //.strafeRight(12)
 
 
 

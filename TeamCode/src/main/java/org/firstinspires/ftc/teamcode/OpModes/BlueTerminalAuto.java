@@ -267,7 +267,7 @@ public class BlueTerminalAuto extends LinearOpMode {
         drive.followTrajectorySequence(untilCycle);
 
         //run 4 mid cycles
-        for(int i=0;i< params.numCycles-1;i++) {
+        for(int i=0;i< 2;i++) {
             drive.followTrajectorySequence(cycleMid);
         }
 
