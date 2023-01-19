@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
-@Autonomous(name = "Auto: Blue Terminal", group = "Competition")
+@Autonomous(name = "Auto: Red Terminal", group = "Competition")
 public class RedTerminalAuto extends LinearOpMode {
     /*
 
@@ -114,7 +114,6 @@ public class RedTerminalAuto extends LinearOpMode {
 
                 //drive to cone stack
                 .splineTo(new Vector2d(-params.preloadWaypointX,params.preloadWaypointY),params.preloadWaypointHeading)
-                .forward(params.cycle1coneStackForward)
 
                 //raise lift to cone height
                 .addTemporalMarker(0, ()->{
@@ -260,8 +259,8 @@ public class RedTerminalAuto extends LinearOpMode {
         drive.followTrajectorySequence(untilCycle);
 
         //run 4 mid cycles
-        for(int i=0;i<4;i++) {
-            drive.followTrajectorySequence(untilCycle);
+        for(int i=0;i<params.numCycles-1;i++) {
+            drive.followTrajectorySequence(cycleMid);
         }
 
         //run 1 high cycle

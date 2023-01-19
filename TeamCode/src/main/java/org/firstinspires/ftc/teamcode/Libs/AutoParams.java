@@ -14,18 +14,21 @@ public class AutoParams {
 
     All values are based on BlueTerminalAuto and are negated as needed in RedTerminalAuto
      */
+
+    //number of cycles
+    public  final int numCycles=2;
     //claw open time
-    public final double timeOpen=0.25;
+    public final double timeOpen=0.35;
 
     //claw close time
-    public final double timeClose=0.5;
+    public final double timeClose=0.35;
 
     //lift heights for grabbing cones from stack
-    public final int cycle1=10;
-    public final int cycle2=20;
-    public final int cycle3=30;
-    public final int cycle4=40;
-    public final int cycle5=50;
+    public final int cycle1=50;
+    public final int cycle2=100;
+    public final int cycle3=150;
+    public final int cycle4=200;
+    public final int cycle5=250;
 
     //staring pose X and Y
     public final double startPoseX=35.25;
@@ -44,7 +47,7 @@ public class AutoParams {
     public final double preloadMidBackward=8;
 
     //amount to turn to reorient to original heading after scoring preload
-    public final double preloadReorientHeading=-40;
+    public final double preloadReorientHeading=Math.toRadians(-40);
 
     //waypoint to cone stack X, Y, and Heading
     public final double preloadWaypointX=45;

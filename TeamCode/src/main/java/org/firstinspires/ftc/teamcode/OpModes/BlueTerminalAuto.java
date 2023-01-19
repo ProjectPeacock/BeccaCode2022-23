@@ -75,12 +75,12 @@ public class BlueTerminalAuto extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY);
+        Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
             //close claw to grab preload
-            .addTemporalMarker(0, ()->{
+            .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.closeClaw();
             })
 
@@ -88,15 +88,16 @@ public class BlueTerminalAuto extends LinearOpMode {
             .splineTo(new Vector2d(params.preloadMidX,params.preloadMidY),params.preloadMidHeading)
 
             //lift lift
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftScore(2);
             })
+                .waitSeconds(0.25)
 
             //align to mid pole
             .forward(params.preloadMidForward)
 
             //wait for claw to open
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.openClaw();
             })
             .waitSeconds(params.timeOpen)
@@ -105,7 +106,7 @@ public class BlueTerminalAuto extends LinearOpMode {
             .back(params.preloadMidBackward)
 
             //lower lift
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftScore(0);
             })
 
@@ -114,18 +115,18 @@ public class BlueTerminalAuto extends LinearOpMode {
 
             //drive to cone stack
             .splineTo(new Vector2d(params.preloadWaypointX,params.preloadWaypointY),params.preloadWaypointHeading)
-            .forward(params.cycle1coneStackForward)
 
             //raise lift to cone height
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftGrab();
             })
+                .waitSeconds(0.125)
 
             //drive to cone stack
             .forward(params.cycle1coneStackForward)
 
             //grab cone
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.closeClaw();
             })
             .waitSeconds(params.timeClose)
@@ -139,15 +140,16 @@ public class BlueTerminalAuto extends LinearOpMode {
             .lineToSplineHeading(new Pose2d(params.cycleMidX,params.cycleMidY, params.cycleMidHeading))
 
             //raise lift
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftScore(2);
             })
+                .waitSeconds(0.25)
 
             //final pole approach
             .forward(params.cycleMidForward)
 
             //drop cone
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.openClaw();
             })
             .waitSeconds(params.timeOpen)
@@ -156,7 +158,7 @@ public class BlueTerminalAuto extends LinearOpMode {
             .back(params.cycleMidReverse)
 
             //lower lift
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftScore(0);
             })
 
@@ -165,15 +167,16 @@ public class BlueTerminalAuto extends LinearOpMode {
             .forward(params.coneStackForward)
 
             //raise lift to cone height
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftGrab();
             })
+                .waitSeconds(0.125)
 
             //drive to cone stack
             .forward(params.coneStackForward)
 
             //grab cone
-            .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.closeClaw();
             })
             .waitSeconds(params.timeClose)
@@ -182,26 +185,31 @@ public class BlueTerminalAuto extends LinearOpMode {
         TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
             //back away from stack
             .back(params.coneStackReverse)
+                .waitSeconds(0)
 
             //spline to high pole
             .lineToSplineHeading(new Pose2d(params.cycleHighX,params.cycleHighY,params.cycleHighHeading))
 
             //raise lift
-            .addTemporalMarker(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 liftControl.moveLiftScore(3);
             })
+                .waitSeconds(0.25)
 
             //final pole approach
             .forward(params.cycleHighForward)
 
             //drop cone
-                .addTemporalMarker(0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                     liftControl.openClaw();
                 })
             .waitSeconds(params.timeOpen)
 
             //back from pole
             .back(params.cycleHighReverse)
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
+                    liftControl.moveLiftScore(0);
+                })
 
             .build();
 
@@ -259,8 +267,8 @@ public class BlueTerminalAuto extends LinearOpMode {
         drive.followTrajectorySequence(untilCycle);
 
         //run 4 mid cycles
-        for(int i=0;i<4;i++) {
-            drive.followTrajectorySequence(untilCycle);
+        for(int i=0;i< params.numCycles-1;i++) {
+            drive.followTrajectorySequence(cycleMid);
         }
 
         //run 1 high cycle
