@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.Libs.AutoClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
+import org.firstinspires.ftc.teamcode.Libs.LiftThread;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -37,17 +40,39 @@ public class TestAutoRR extends OpMode {
      */
 
     //lift control init
-    public final static HWProfile robot = new HWProfile();
-    private OpMode myOpmode=this;
-    AutoClass liftControl = new AutoClass(robot,myOpmode);
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    private int parkPos = 1;
 
-    //init params
-    AutoParams params = new AutoParams();
+//    public HWProfile robot = new HWProfile();
+//    private OpMode myOpmode=this;
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+//    private int parkPos = 1;
+//    public DcMotorEx motorLiftF = null;
+//    public DcMotorEx motorLiftR = null;
+
 
     public void init() {
+        /*
+        motorLiftF = hardwareMap.get(DcMotorEx.class, "motorLiftFront");
+        motorLiftF.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorLiftF.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorLiftF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLiftF.setPower(0);
+
+        motorLiftR = hardwareMap.get(DcMotorEx.class, "motorLiftRear");
+        motorLiftR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorLiftR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorLiftR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLiftR.setPower(0);
+
         robot.init(hardwareMap);
+
+        //init params
+        AutoParams params = new AutoParams();
+
+        // start up the shooter control program which runs in parallel
+        LiftThread liftControl = new LiftThread(robot, motorLiftF, motorLiftR, params);
+        Thread lift = new Thread(liftControl);
+
+        lift.start();
 
         Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
@@ -161,10 +186,11 @@ public class TestAutoRR extends OpMode {
             drive.followTrajectorySequenceAsync(park3);
         }
 
+         */
+
     }
     public void loop(){
-        drive.update();
-        liftControl.update();
+//        drive.update();
     }
 
 }

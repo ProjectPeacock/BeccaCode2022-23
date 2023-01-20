@@ -19,7 +19,6 @@ public class AutoThreadClass implements Runnable{
     public double servoPos=0.3;
     AutoParams params = new AutoParams();
 
-
     /*
      * Constructor method
      */
@@ -56,6 +55,12 @@ public class AutoThreadClass implements Runnable{
         this.currentLiftPosition=robot.winch.getPositions().get(0);
     }   //  end of method controlLift
 
+
+    public void setLiftPosition(int targetPosition){
+        this.targetPos = targetPosition;
+    }
+
+
     /*
      * Method: stopLiftThread
      *  -   Turns off the shooter control process
@@ -86,12 +91,11 @@ public class AutoThreadClass implements Runnable{
     public void update(){
         robot.winch.setTargetPosition(this.targetPos);
         robot.servoGrabber.setPosition(this.servoPos);
-        if(!robot.winch.atTargetPosition()){
+        if(robot.winch.atTargetPosition()){
             robot.winch.set(1);
         }else{
             robot.winch.stopMotor();
         }
-
     }
 
     //claw control methods
