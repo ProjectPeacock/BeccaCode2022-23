@@ -50,6 +50,11 @@ public class AutoClass {
         }else if(pos==3){
             targetPos= robot.LIFT_HIGH;
         }
+        robot.winch.setTargetPosition(targetPos);
+        while(!robot.winch.atTargetPosition()){
+            robot.winch.set(1);
+        }
+        robot.winch.stopMotor();
     }
 
     //method for moving lift to retrieve cones
@@ -67,6 +72,12 @@ public class AutoClass {
             targetPos= params.cycle5;
         }
         cyclesRun++;
+        robot.winch.setTargetPosition(targetPos);
+        while(!robot.winch.atTargetPosition()){
+            robot.winch.set(1);
+        }
+            robot.winch.stopMotor();
+
     }
 
     public void update(){

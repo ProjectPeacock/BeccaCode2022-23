@@ -37,8 +37,8 @@ public class AutoParams {
 
 //preload parameters
     //scoring position for preload on mid pole X, Y, and Heading
-    public final double preloadMidX=30.5;
-    public final double preloadMidY=-36;
+    public final double preloadMidX=28.5;
+    public final double preloadMidY=-34;
     public final double preloadMidHeading=Math.toRadians(120);
 
     //amount to drive forward for preload approach
