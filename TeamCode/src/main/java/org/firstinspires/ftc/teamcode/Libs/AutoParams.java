@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Libs;
 
+import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+
 public class AutoParams {
     /*
 
@@ -14,6 +16,7 @@ public class AutoParams {
 
     All values are based on BlueTerminalAuto and are negated as needed in RedTerminalAuto
      */
+    HWProfile robot = new HWProfile();
 
     //number of cycles
     public final int numMidCycles=1;
@@ -24,12 +27,18 @@ public class AutoParams {
     //claw close time
     public final double timeClose=0.35;
 
+    //lift power
+    public final double liftPow=1;
+
     //lift heights for grabbing cones from stack
-    public final int cycle1=50;
-    public final int cycle2=100;
-    public final int cycle3=150;
-    public final int cycle4=200;
-    public final int cycle5=250;
+    public final int cycle1=250;
+    public final int cycle2=200;
+    public final int cycle3=200;
+    public final int cycle4=100;
+    public final int cycle5=0;
+
+    //amount of difference between lift motor targets
+    public final int diffConstant = 20;
 
     //staring pose X and Y
     public final double startPoseX=35.25;

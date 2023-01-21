@@ -7,8 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,9 +15,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.Libs.AutoClass;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
-import org.firstinspires.ftc.teamcode.Libs.AutoThreadClass;
 import org.firstinspires.ftc.teamcode.Libs.LiftThread;
 
 import java.util.List;
@@ -63,7 +60,7 @@ public class BrokenBotThread extends LinearOpMode {
         GamepadEx gp2 = new GamepadEx(gamepad2);
         ButtonReader clawToggleButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
-        AutoClass drive = new AutoClass(robot, opMode);
+        LiftControlClass drive = new LiftControlClass(robot, opMode);
 
         motorLiftF = hardwareMap.get(DcMotorEx.class, "motorLiftFront");
         motorLiftF.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -258,7 +255,6 @@ public class BrokenBotThread extends LinearOpMode {
             telemetry.addData("B:", "Lift Low");
             telemetry.addData("X:", "Lift Mid");
             telemetry.addData("Y:", "Lift High");
-            telemetry.addData("Winch Encoder Value = ", robot.winch.getPositions());
 //            telemetry.addData("Lift Rear Encoder Value = ", robot.winch.getCurrentPosition());
             telemetry.addData("IMU Angle X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angle Y = ", robot.imu.getAngles()[1]);
@@ -267,35 +263,34 @@ public class BrokenBotThread extends LinearOpMode {
             telemetry.addData("Left Stick Y = ", gp1.getLeftY());
             telemetry.addData("Right Stick X = ", gp1.getRightX());
             telemetry.addData("Right Stick Y = ", gp1.getRightY());
-            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getPosition());
-            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getPosition());
+            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
+            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getCurrentPosition());
             telemetry.update();
 
             // post telemetry to FTC Dashboard as well
             dashTelemetry.put("01 - IMU Angle X = ", robot.imu.getAngles()[0]);
             dashTelemetry.put("02 - IMU Angle Y = ", robot.imu.getAngles()[1]);
             dashTelemetry.put("03 - IMU Angle Z = ", robot.imu.getAngles()[2]);
-            dashTelemetry.put("04 - Winch Encoder Value = ", robot.winch.getPositions());
 //            dashTelemetry.put("05 - Lift Rear Encoder Value = ", robot.motorLiftRear.getCurrentPosition());
-            dashTelemetry.put("06 - Claw Value = ", robot.servoGrabber.getPosition());
-            dashTelemetry.put("07 - GP1.Button.A = ", "RESET LIFT");
-            dashTelemetry.put("08 - GP1.Button.B = ", "LIFT LOW JUNCTION");
-            dashTelemetry.put("09 - GP1.Button.X = ", "LIFT MID JUNCTION");
-            dashTelemetry.put("10 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
-            dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
-            dashTelemetry.put("12 - Lift Power = ", liftPower);
-            dashTelemetry.put("13 - motorLF encoder = ", robot.motorLF.getCurrentPosition());
-            dashTelemetry.put("14 - motorLR encoder = ", robot.motorLR.getCurrentPosition());
-            dashTelemetry.put("15 - motorRF encoder = ", robot.motorRF.getCurrentPosition());
-            dashTelemetry.put("16 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
-            dashTelemetry.put("17 - target Lift position = ", liftPosition);
-            dashTelemetry.put("18 - Winch at Target Lift Position = ", robot.winch.atTargetPosition());
-            dashTelemetry.put("18a - motorLiftF Position = ", motorLiftF.getCurrentPosition());
-            dashTelemetry.put("18b - motorLiftF Get Velocity = ", motorLiftF.getVelocity());
-            dashTelemetry.put("18c - motorLiftR Position = ", motorLiftR.getCurrentPosition());
-            dashTelemetry.put("18d - motorLiftF Get Velocity = ", motorLiftR.getVelocity());
-            dashTelemetry.put("19 - x axis odometry = ", robot.sideSideOdo.getPosition());
-            dashTelemetry.put("20 - y axis odometry = ", robot.forwardBackwardOdo.getPosition());
+            dashTelemetry.put("04 - Claw Value = ", robot.servoGrabber.getPosition());
+            dashTelemetry.put("05 - GP1.Button.A = ", "RESET LIFT");
+            dashTelemetry.put("06 - GP1.Button.B = ", "LIFT LOW JUNCTION");
+            dashTelemetry.put("07 - GP1.Button.X = ", "LIFT MID JUNCTION");
+            dashTelemetry.put("08 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
+            dashTelemetry.put("09 - GP2.Button.A = ", "Custom Position - program stack cone levels");
+            dashTelemetry.put("10 - Lift Power = ", liftPower);
+            dashTelemetry.put("11 - motorLF encoder = ", robot.motorLF.getCurrentPosition());
+            dashTelemetry.put("12 - motorLR encoder = ", robot.motorLR.getCurrentPosition());
+            dashTelemetry.put("13 - motorRF encoder = ", robot.motorRF.getCurrentPosition());
+            dashTelemetry.put("14 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
+            dashTelemetry.put("15 - target Lift position = ", liftPosition);
+//            dashTelemetry.put("16 - Winch at Target Lift Position = ", robot.winch.atTargetPosition());
+            dashTelemetry.put("16a - motorLiftF Position = ", motorLiftF.getCurrentPosition());
+            dashTelemetry.put("16b - motorLiftF Get Velocity = ", motorLiftF.getVelocity());
+            dashTelemetry.put("16c - motorLiftR Position = ", motorLiftR.getCurrentPosition());
+            dashTelemetry.put("16d - motorLiftF Get Velocity = ", motorLiftR.getVelocity());
+            dashTelemetry.put("17 - x axis odometry = ", robot.sideSideOdo.getCurrentPosition());
+            dashTelemetry.put("18 - y axis odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
             dashboard.sendTelemetryPacket(dashTelemetry);
 
         }   // end of while(opModeIsActive)

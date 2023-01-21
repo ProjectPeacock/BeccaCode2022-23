@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.Libs.AutoClass;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
@@ -28,8 +28,9 @@ public class BrokenBot extends LinearOpMode {
     public static int l3_LIFT_JUNCTION_HIGH = robot.LIFT_HIGH;
     public static int l4_LIFT_JUNCTION_MID = robot.LIFT_MID;
     public static int l5_LIFT_JUNCTION_LOW = robot.LIFT_LOW;
-    public static int l6_LIFT_POSITION = 0;
-    public static double l7_Lift_Up_Power = robot.LIFT_POW;
+    public static int l6_LIFT_BOTTOM = robot.LIFT_BOTTOM;
+    public static double l7_LIFT_POWER = robot.LIFT_POW;
+    public static double l8_TURN_MULTIPLIER = robot.TURN_MULTIPLIER;
 
     @Override
     public void runOpMode() {
@@ -46,7 +47,7 @@ public class BrokenBot extends LinearOpMode {
         GamepadEx gp2 = new GamepadEx(gamepad2);
         ButtonReader clawToggleButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
-        AutoClass drive = new AutoClass(robot, opMode);
+        LiftControlClass drive = new LiftControlClass(robot, opMode);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -82,9 +83,9 @@ public class BrokenBot extends LinearOpMode {
                 robot.autoLight.set(0);
             }
             if(fieldCentric){
-                robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
+                robot.mecanum.driveFieldCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*l8_TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
             }else{
-                robot.mecanum.driveRobotCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
+                robot.mecanum.driveRobotCentric(gp1.getLeftX(),gp1.getLeftY(),-gp1.getRightX()*l8_TURN_MULTIPLIER, true);
             }
 
             if(clawToggleButton.isDown()&&clawReady){
@@ -101,63 +102,47 @@ public class BrokenBot extends LinearOpMode {
                 robot.servoGrabber.setPosition(l2_CLAW_CLOSE);
             }
 
-/*
-            if(gp1.isDown(GamepadKeys.Button.DPAD_UP)) {
-                robot.motorLF.set(1);
-            } else if (gp1.isDown(GamepadKeys.Button.DPAD_DOWN)){
-                robot.motorLR.set(1);
-            } else if (gp1.isDown(GamepadKeys.Button.DPAD_LEFT)) {
-                robot.motorRF.set(1);
-            } else if (gp1.isDown(GamepadKeys.Button.DPAD_RIGHT)){
-                robot.motorRR.set(1);
-            }
-            */
-
-            /*
-             * #############################################################
-             * #################### LIFT CONTROL ###########################
-             * #############################################################
-             */
-
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
                 liftPosition = liftPosition - 10;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
 
             } else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
                 liftPosition = liftPosition + 10;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
             } else {
             }
 
             if(gp1.isDown(GamepadKeys.Button.A)){
                 liftPosition = robot.LIFT_BOTTOM;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
             }
 
             if(gp1.isDown(GamepadKeys.Button.B)){
                 liftPosition = l5_LIFT_JUNCTION_LOW;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
             }
 
             if(gp1.isDown(GamepadKeys.Button.X)){
                 liftPosition = l4_LIFT_JUNCTION_MID;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
             }
 
             if(gp1.isDown(GamepadKeys.Button.Y)){
                 liftPosition =l3_LIFT_JUNCTION_HIGH;
-                liftPower = l7_Lift_Up_Power;
+                liftPower = l7_LIFT_POWER;
             }
 
             if(gp2.isDown(GamepadKeys.Button.A)){
-                liftPosition = l6_LIFT_POSITION;
-                liftPower = l7_Lift_Up_Power;
+                liftPosition = l6_LIFT_BOTTOM;
+                liftPower = l7_LIFT_POWER;
             }
 
             liftPosition = Range.clip(liftPosition, robot.LIFT_BOTTOM, robot.MAX_LIFT_VALUE);
 
-            robot.winch.setTargetPosition(liftPosition);
-            robot.winch.set(liftPower);
+            robot.motorLiftFront.setTargetPosition(liftPosition);
+            robot.motorLiftRear.setTargetPosition(liftPosition);
+            robot.motorLiftFront.setPower(liftPower);
+            robot.motorLiftRear.setPower(liftPower);
 
             // Provide user feedback
             telemetry.addData("A:", "Lift Reset");
@@ -173,8 +158,8 @@ public class BrokenBot extends LinearOpMode {
             telemetry.addData("Left Stick Y = ", gp1.getLeftY());
             telemetry.addData("Right Stick X = ", gp1.getRightX());
             telemetry.addData("Right Stick Y = ", gp1.getRightY());
-            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getPosition());
-            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getPosition());
+            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
+            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getCurrentPosition());
             telemetry.update();
 
             // post telemetry to FTC Dashboard as well
@@ -196,8 +181,8 @@ public class BrokenBot extends LinearOpMode {
             dashTelemetry.put("16 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
             dashTelemetry.put("17 - motorLiftFront position = ", robot.motorLiftFront.getCurrentPosition());
             dashTelemetry.put("18 - motorLiftRear position = ", robot.motorLiftFront.getCurrentPosition());
-            dashTelemetry.put("19 - x axis odometry = ", robot.sideSideOdo.getPosition());
-            dashTelemetry.put("20 - y axis odometry = ", robot.forwardBackwardOdo.getPosition());
+            dashTelemetry.put("19 - x axis odometry = ", robot.sideSideOdo.getCurrentPosition());
+            dashTelemetry.put("20 - y axis odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
             dashboard.sendTelemetryPacket(dashTelemetry);
 
         }   // end of while(opModeIsActive)

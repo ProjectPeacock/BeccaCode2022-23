@@ -8,9 +8,11 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
@@ -22,13 +24,15 @@ public class SingleDriverTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        LinearOpMode myOpmode= this;
+        LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
         ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
-        ButtonReader liftResetButton = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
-        robot.winch.setRunMode(Motor.RunMode.RawPower);
+        robot.motorLiftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorLiftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -38,7 +42,6 @@ public class SingleDriverTeleop extends LinearOpMode {
         boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
-        int liftPos=0;
 
         waitForStart();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
@@ -92,19 +95,6 @@ public class SingleDriverTeleop extends LinearOpMode {
                 robot.mecanum.driveRobotCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
             }
 
-            //lift power (take analog from triggers, apply to variable, variable gets applied to motors
-
-            /*
-            if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
-                liftPower=gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
-                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
-            }else{
-                liftPower=0;
-            }
-
-             */
-
             //claw control
             if(aReader.isDown()&&clawReady){
                 clawToggle=!clawToggle;
@@ -117,48 +107,34 @@ public class SingleDriverTeleop extends LinearOpMode {
             }
             //apply value to claw
             if (clawToggle) {
-                robot.servoGrabber.setPosition(robot.CLAW_OPEN);
+                lift.openClaw();
             } else {
-                robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
+                lift.closeClaw();
             }
 
-            if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1) {
+            if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()>0) {
                 liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
-                liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()<robot.LIFT_HIGH+100){
+                liftPower=Math.pow(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),2);
             }else{
-                liftPower=0;
+                liftPower=0.01;
             }
 
-
-            /*
-            if(xReader.isDown()){
-                liftPos=robot.JUNCTION_LOWER;
-            }else if(yReader.isDown()) {
-                liftPos=robot.JUNCTION_MID;
-            }else if(bReader.isDown()){
-                liftPos=robot.JUNCTION_HIGH;
-            }else if(liftResetButton.isDown()){
-                liftPos = 0;
-            }
-            */
-
-            liftPos = Range.clip(liftPos, robot.LIFT_BOTTOM, robot.MAX_LIFT_VALUE);;
-            robot.winch.set(liftPower);
+            lift.setLiftPow(liftPower);
 
             // Provide user feedback
-            //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
-            telemetry.addData("Lift Position = ", liftPos);
+            telemetry.addData("Lift position front = ",robot.motorLiftFront.getCurrentPosition());
+            telemetry.addData("Lift position rear = ",robot.motorLiftRear.getCurrentPosition());
             telemetry.addData("Lift power = ",liftPower);
             telemetry.addData("Claw open = ", clawToggle);
             telemetry.addData("Current tip = ",tip);
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
-            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
-            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getPosition()/(2*Math.PI*0.7480314960629921));
+//            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
+//            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
             telemetry.update();
 
         }   // end of while(opModeIsActive)
     }   // end of runOpMode()
-}       // end of MSTeleop class
+}
