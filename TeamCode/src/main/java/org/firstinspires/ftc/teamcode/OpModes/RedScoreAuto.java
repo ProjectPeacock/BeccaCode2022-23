@@ -41,7 +41,7 @@ public class RedScoreAuto extends LinearOpMode {
     AutoParams params = new AutoParams();
 
     //TFOD init
-    private static final String TFOD_MODEL_ASSET = "GenericSignalSleeve-Take1.tflite";
+    private static final String TFOD_MODEL_ASSET = robot.tfliteFileName;
     private static final String[] LABELS = {
             "circle",
             "star",
@@ -137,6 +137,7 @@ public class RedScoreAuto extends LinearOpMode {
 
         }  // end of while
 
+        waitForStart();
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 

@@ -115,9 +115,9 @@ public class SingleDriverTeleop extends LinearOpMode {
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()>0) {
                 liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
             }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()<robot.LIFT_HIGH+100){
-                liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+                liftPower=Math.pow(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),2);
             }else{
-                liftPower=0;
+                liftPower=0.01;
             }
 
             lift.setLiftPow(liftPower);
@@ -131,8 +131,8 @@ public class SingleDriverTeleop extends LinearOpMode {
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
-            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
-            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
+//            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
+//            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
             telemetry.update();
 
         }   // end of while(opModeIsActive)

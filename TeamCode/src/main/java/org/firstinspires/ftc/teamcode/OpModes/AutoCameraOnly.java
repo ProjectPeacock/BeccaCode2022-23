@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -52,7 +53,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "Auto: Camera Only", group = "Competition")
-
+@Disabled
 public class AutoCameraOnly extends LinearOpMode {
 
     /*

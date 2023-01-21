@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import java.util.List;
 
 @TeleOp(name = "RTP Single Driver Teleop Mode", group = "Competition")
-
+@Disabled
 public class RTPSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
@@ -27,7 +28,7 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
         LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
-        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
+        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.LEFT_BUMPER);
         ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
@@ -109,12 +110,12 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
             }
 
             if (gp1.getButton(GamepadKeys.Button.B)){
-                liftPos= robot.LIFT_HIGH;
-            }else if(gp1.getButton(GamepadKeys.Button.Y)){
-                liftPos= robot.LIFT_MID;
-            }else if(gp1.getButton(GamepadKeys.Button.X)){
                 liftPos= robot.LIFT_LOW;
-            }else if(gp1.getButton(GamepadKeys.Button.LEFT_BUMPER)){
+            }else if(gp1.getButton(GamepadKeys.Button.Y)){
+                liftPos= robot.LIFT_HIGH;
+            }else if(gp1.getButton(GamepadKeys.Button.X)){
+                liftPos= robot.LIFT_MID;
+            }else if(gp1.getButton(GamepadKeys.Button.A)){
                 liftPos= robot.LIFT_BOTTOM;
             }
 
@@ -135,8 +136,8 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
-            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
-            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
+//            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
+//            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
             telemetry.update();
 
         }   // end of while(opModeIsActive)
