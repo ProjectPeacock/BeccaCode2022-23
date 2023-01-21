@@ -71,7 +71,8 @@ public class LiftThread implements Runnable{
         if ((liftPosition - motorFrontLift.getCurrentPosition()) > 0){
             if (motorFrontLift.getCurrentPosition() < liftPosition) {
                 this.differentialValue = Math.abs(motorFrontLift.getCurrentPosition()- differentialValue);
-                this.liftPower = Math.abs(motorFrontLift.getCurrentPosition() - liftPosition) * this.Kp + (differentialValue * Kd);
+                this.liftPower = 1;
+                //this.liftPower = Math.abs(motorFrontLift.getCurrentPosition() - liftPosition) * this.Kp + (differentialValue * Kd);
                 motorFrontLift.setPower(liftPower);
                 motorRearLift.setPower(liftPower);
             } else if (motorFrontLift.getCurrentPosition() > liftPosition) {
@@ -82,8 +83,9 @@ public class LiftThread implements Runnable{
         } else if((liftPosition - motorFrontLift.getCurrentPosition()) < 0){
             if (motorFrontLift.getCurrentPosition() > liftPosition) {
                 this.differentialValue = Math.abs(motorFrontLift.getCurrentPosition() - differentialValue);
-                this.liftPower = (Math.abs(motorFrontLift.getCurrentPosition() - liftPosition) * Kp + (differentialValue * Kd))/2;
-                if(liftPower < 0.25) liftPower = 0.25;
+                liftPower = 1;
+                //                this.liftPower = (Math.abs(motorFrontLift.getCurrentPosition() - liftPosition) * Kp + (differentialValue * Kd));
+//                if(liftPower < 0.25) liftPower = 0.25;
                 motorFrontLift.setPower(-liftPower);
                 motorRearLift.setPower(-liftPower);
             } else if (motorFrontLift.getCurrentPosition() < liftPosition) {

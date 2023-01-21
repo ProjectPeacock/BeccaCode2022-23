@@ -35,9 +35,9 @@ public class HWProfile {
 
     //lift constants
     final public double LIFT_POW=1;
-    final public int MAX_LIFT_VALUE = 1275;
+    final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;
-    final public int LIFT_LOW=400;
+    final public int LIFT_LOW=525;
     final public int LIFT_MID=875;
     final public int LIFT_HIGH=1000;
     final public double LIFT_KP=0.0225;

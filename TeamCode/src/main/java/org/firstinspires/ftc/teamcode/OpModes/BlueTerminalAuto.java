@@ -228,7 +228,7 @@ public class BlueTerminalAuto extends LinearOpMode {
             .strafeRight(params.park36Inch)
             .build();
 
-        while(!opModeIsActive()) {
+        while(!isStopRequested() && !opModeIsActive()) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -261,7 +261,7 @@ public class BlueTerminalAuto extends LinearOpMode {
 
         }  // end of while
         liftThread.start();
-        waitForStart();
+
         if(isStopRequested()) return;
 
         //score preload
