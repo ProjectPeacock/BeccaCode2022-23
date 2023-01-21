@@ -7,8 +7,6 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,49 +16,56 @@ public class HWProfile {
     //constants
     public final boolean fieldCentric=true;
 
-    //tflite file name
-    public final String tfliteFileName = "PP_Generic_SS.tflite";
-
-    //max difference between front and rear lift motors
-    public final int rearLiftMotorTol = 70;
-
     //claw positions
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.55;
 
     //drive constants
+    public final double MAX_DRIVE_POWER =1;
     public final double TURN_MULTIPLIER = 0.75;
+    public final double STRAFE_FACTOR = 0.75;
 
     //anti-tip constants
     public final double ANTI_TIP_ADJ=0.3;
     public final double ANTI_TIP_TOL=10;
     public final int ANTI_TIP_AXIS=1;
 
+    final public double DRIVE_TICKS_PER_INCH = 23.7;
+    final public double USD_COUNTS_PER_INCH = 23.7;
+
     //lift constants
-    final public int liftAdjust=10;
     final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
-    final public int LIFT_MID=850;
-    final public int LIFT_HIGH=1300;
+    final public int LIFT_MID=875;
+    final public int LIFT_HIGH=1000;
+    final public double LIFT_KP=0.0225;
+    final public int LIFT_TOL=10;
+
+    final public double PARK_TIME = 27;     // sets the time for when the robot needs to park in auto
+
+    final public double MIN_PIDROTATE_POWER = 0.2;
 
     /* Public OpMode members. */
     public MotorEx motorLF = null;
     public MotorEx motorLR = null;
     public MotorEx motorRF = null;
     public MotorEx motorRR = null;
-    public DcMotorEx motorLiftFront = null;
-    public DcMotorEx motorLiftRear = null;
+    public MotorEx motorLiftFront = null;
+    public MotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
-    public DcMotorEx forwardBackwardOdo = null;
-    public DcMotorEx sideSideOdo = null;
+    public Motor.Encoder forwardBackwardOdo = null;
+    public Motor.Encoder sideSideOdo = null;
+
+    public MotorGroup winch = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
+    private final ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
     public HWProfile(){
@@ -97,22 +102,30 @@ public class HWProfile {
         mecanum = new MecanumDrive(motorLF, motorRF, motorLR, motorRR);
 
         //lift motors init
-        motorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
-        motorLiftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftFront.setTargetPosition(0);
-        motorLiftFront.setTargetPositionTolerance(10);
-        motorLiftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", Motor.GoBILDA.RPM_1150);
+        motorLiftRear = new MotorEx(ahwMap, "motorLiftRear", Motor.GoBILDA.RPM_1150);
 
-        motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
-        motorLiftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftRear.setTargetPosition(0);
-        motorLiftRear.setTargetPositionTolerance(rearLiftMotorTol);
-        motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        winch = new MotorGroup(motorLiftFront,motorLiftRear);
+        winch.setPositionCoefficient(LIFT_KP);
+        winch.setTargetPosition(0);
+        winch.setRunMode(Motor.RunMode.PositionControl);
+        winch.setPositionTolerance(LIFT_TOL);
+        winch.setPositionCoefficient(LIFT_KP);
+        winch.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        winch.stopMotor();
+        winch.resetEncoder();
 
         //light init
         autoLight = new MotorEx(ahwMap, "sideSideOdo", 8192,10000);
         autoLight.set(0);
+
+        //odometry encoders init
+        sideSideOdo = autoLight.encoder;
+        sideSideOdo.reset();
+
+        MotorEx xAxisOdoPlaceholder = new MotorEx(ahwMap, "forwardBackwardOdo", 8192,10000);
+        forwardBackwardOdo = xAxisOdoPlaceholder.encoder;
+        forwardBackwardOdo.reset();
 
         //init servos
         servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);
