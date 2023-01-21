@@ -10,15 +10,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.Libs.AutoClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
-@Autonomous(name = "Auto: Blue Terminal-Park", group = "Competition")
-public class ParkingAutoBothTerminals extends LinearOpMode {
+@Autonomous(name = "Red Score Auto", group = "Competition")
+public class RedScoreAuto extends LinearOpMode {
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -35,7 +35,7 @@ public class ParkingAutoBothTerminals extends LinearOpMode {
     //lift control init
     public final static HWProfile robot = new HWProfile();
     private LinearOpMode myOpmode=this;
-    AutoClass clawControl = new AutoClass(robot,myOpmode);
+    LiftControlClass clawControl = new LiftControlClass(robot,myOpmode);
 
     //init params
     AutoParams params = new AutoParams();
@@ -81,19 +81,19 @@ public class ParkingAutoBothTerminals extends LinearOpMode {
             .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 clawControl.closeClaw();
             })
-                .forward(6)
-                .turn(Math.toRadians(-90))
-                .forward(24)
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    clawControl.openClaw();
-                })
-                .back(20)
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    clawControl.closeClaw();
-                })
-                .turn(Math.toRadians(90))
-                .forward(50)
-                .back(4)
+            .forward(6)
+            .turn(Math.toRadians(90))
+            .forward(24)
+            .UNSTABLE_addTemporalMarkerOffset(0, ()->{
+                clawControl.openClaw();
+            })
+            .back(20)
+            .UNSTABLE_addTemporalMarkerOffset(0, ()->{
+                clawControl.closeClaw();
+            })
+            .turn(Math.toRadians(-90))
+            .forward(50)
+            .back(4)
             .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())

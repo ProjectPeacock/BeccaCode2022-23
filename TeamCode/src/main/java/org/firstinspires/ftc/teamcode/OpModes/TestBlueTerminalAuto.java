@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
-import org.firstinspires.ftc.teamcode.Libs.LiftThread;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
@@ -63,24 +63,9 @@ public class TestBlueTerminalAuto extends LinearOpMode {
         DcMotorEx motorLiftR = null;
         robot.init(hardwareMap);
 
-        motorLiftF = hardwareMap.get(DcMotorEx.class, "motorLiftFront");
-        motorLiftF.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftF.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motorLiftF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLiftF.setPower(0);
-
-        motorLiftR = hardwareMap.get(DcMotorEx.class, "motorLiftRear");
-        motorLiftR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorLiftR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motorLiftR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLiftR.setPower(0);
-
 
         // start up the shooter control program which runs in parallel
-        LiftThread liftControl = new LiftThread(robot, motorLiftF, motorLiftR, params);
-        Thread lift = new Thread(liftControl);
-        lift.start();
-
+        LiftControlClass liftControl = new LiftControlClass(robot, myOpmode);
         if (tfod != null) {
             tfod.activate();
 
@@ -101,89 +86,61 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(28.5,-31),Math.toRadians(120))
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(2);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(2);})
                 .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.openClaw();
-                })
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.moveLiftGrab();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::moveLiftGrab)
                 .turn(Math.toRadians(-60))
                 .splineToLinearHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
                 .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.closeClaw();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::closeClaw)
                 .build();
 
         TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(2);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(2);})
                 .back(6)
                 .splineToSplineHeading(new Pose2d(30,-17.5,Math.toRadians(220)),Math.toRadians(190))
                 .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.openClaw();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .back(1)
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{
-                    liftControl.moveLiftGrab();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0.25, liftControl::moveLiftGrab)
                 .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,liftControl::closeClaw)
                 .build();
 
         TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(3);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(3);})
                 .back(6)
                 .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(17220))
                 .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.openClaw();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .back(1)
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{
-                    liftControl.moveLiftGrab();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0.25, liftControl::moveLiftGrab)
                 .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,liftControl::closeClaw)
                 .build();
 
         TrajectorySequence finalHigh = drive.trajectorySequenceBuilder(cycleHigh.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(3);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(3);})
                 .back(6)
                 .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(17220))
                 .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{
-                    liftControl.openClaw();
-                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{liftControl.openClaw();})
                 .back(1)
                 .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalHigh.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(0);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(12,-12,Math.toRadians(90)),Math.toRadians(180))
                 .build();
 
         TrajectorySequence park2 = drive.trajectorySequenceBuilder(finalHigh.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(0);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(36,-12,Math.toRadians(90)),Math.toRadians(130))
                 .build();
 
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(finalHigh.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{
-                    liftControl.moveLiftScore(0);
-                })
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(90)),Math.toRadians(0))
                 .build();
 
@@ -223,8 +180,6 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
         if(isStopRequested()) return;
 
-        liftControl.setTargetPosition(robot.LIFT_LOW);
-
         //score preload
         drive.followTrajectorySequence(untilCycle);
         for(int i=0;i<params.numMidCycles;i++){
@@ -242,8 +197,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
             drive.followTrajectorySequence(park2);
         }else{
             drive.followTrajectorySequence(park3);
-        }
-    liftControl.stopThread();
+        };
 
     }
     private void initVuforia() {

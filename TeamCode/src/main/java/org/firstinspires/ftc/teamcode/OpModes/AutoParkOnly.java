@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -11,16 +10,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.Libs.AutoClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
-import org.firstinspires.ftc.teamcode.Libs.AutoThreadClass;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
-@Autonomous(name = "Auto: Blue Terminal", group = "Competition")
-public class BlueTerminalAuto extends LinearOpMode {
+@Autonomous(name = "Auto - Park Only", group = "Competition")
+public class AutoParkOnly extends LinearOpMode {
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -37,8 +35,7 @@ public class BlueTerminalAuto extends LinearOpMode {
     //lift control init
     public final static HWProfile robot = new HWProfile();
     private LinearOpMode myOpmode=this;
-    AutoThreadClass liftControl = new AutoThreadClass(robot,myOpmode);
-    Thread liftThread = new Thread();
+    LiftControlClass clawControl = new LiftControlClass(robot,myOpmode);
 
     //init params
     AutoParams params = new AutoParams();
@@ -47,8 +44,8 @@ public class BlueTerminalAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "GenericSignalSleeve-Take1.tflite";
     private static final String[] LABELS = {
             "circle",
-            "triangle",
-            "star"
+            "star",
+            "triangle"
     };
     private static final String VUFORIA_KEY =
             "AfHl2GP/////AAABmeJc93xOhk1MvZeKbP5E43taYJ6kodzkhsk5wOLGwZI3wxf7v1iTx2Mem/VZSEtpxb3U2fMO7n0EUxSeHRWhOXeX16dMFcjfalezjo3ZkzBuG/y2r4kgLwKs4APyAIClBAon+tf/W/4NkTkYuHGo8zZ0slH/iBpqxvblpNURsG5h4VxPFgF5D/FIfmjnddzQpa4cGarle/Zvuah6q2orUswun31P6ZLuIJvdOIQf7o/ruoRygsSXfVYc35w+Xwm+bwjpZUNzHHYvRNrp0HNWC3Fr2hd0TqWKIIYlCoHj0m5OKX22Ris23V8PdKM/i4/ZIy8JewJXetv1rERC5bfHmUXCS4Rl7RjR+ZscQ5aA0nr8";
@@ -76,158 +73,26 @@ public class BlueTerminalAuto extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-
         Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.closeClaw();
+                clawControl.closeClaw();
             })
-
-            //navigate to mid pole
-            .splineTo(new Vector2d(params.preloadMidX,params.preloadMidY),params.preloadMidHeading)
-
-            //lift lift
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftScore(2);
-            })
-                .waitSeconds(0.25)
-
-            //align to mid pole
-            .forward(params.preloadMidForward)
-
-            //wait for claw to open
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.openClaw();
-            })
-            .waitSeconds(params.timeOpen)
-
-            //leave main pole
-            .back(params.preloadMidBackward)
-
-            //lower lift
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftScore(0);
-            })
-
-            //orient to avoid poles
-            .turn(params.preloadReorientHeading)
-
-            //drive to cone stack
-            .splineTo(new Vector2d(params.preloadWaypointX,params.preloadWaypointY),params.preloadWaypointHeading)
-
-            //raise lift to cone height
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftGrab();
-            })
-                .waitSeconds(0.125)
-
-            //drive to cone stack
-            .forward(params.cycle1coneStackForward)
-
-            //grab cone
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.closeClaw();
-            })
-            .waitSeconds(params.timeClose)
+            .forward(56)
+            .back(4)
             .build();
 
-        TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
-            //back away from stack
-            .back(params.coneStackReverse)
+        TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
+                .strafeLeft(24)
+                .build();
+        TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
+                .strafeRight(24)
+                .build();
 
-            //spline to mid pole
-            .lineToSplineHeading(new Pose2d(params.cycleMidX,params.cycleMidY, params.cycleMidHeading))
-
-            //raise lift
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftScore(2);
-            })
-                .waitSeconds(0.25)
-
-            //final pole approach
-            .forward(params.cycleMidForward)
-
-            //drop cone
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.openClaw();
-            })
-            .waitSeconds(params.timeOpen)
-
-            //back from pole
-            .back(params.cycleMidReverse)
-
-            //lower lift
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftScore(0);
-            })
-
-            //return to stack
-            .lineToSplineHeading(new Pose2d(params.coneStackAlignX,params.coneStackAlignY,params.coneStackAlignHeadingBlue))
-            .forward(params.coneStackForward)
-
-            //raise lift to cone height
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftGrab();
-            })
-                .waitSeconds(0.125)
-
-            //drive to cone stack
-            .forward(params.coneStackForward)
-
-            //grab cone
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.closeClaw();
-            })
-            .waitSeconds(params.timeClose)
-            .build();
-
-        TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
-            //back away from stack
-            .back(params.coneStackReverse)
-                .waitSeconds(0)
-
-            //spline to high pole
-            .lineToSplineHeading(new Pose2d(params.cycleHighX,params.cycleHighY,params.cycleHighHeading))
-
-            //raise lift
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                liftControl.moveLiftScore(3);
-            })
-                .waitSeconds(0.25)
-
-            //final pole approach
-            .forward(params.cycleHighForward)
-
-            //drop cone
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    liftControl.openClaw();
-                })
-            .waitSeconds(params.timeOpen)
-
-            //back from pole
-            .back(params.cycleHighReverse)
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    liftControl.moveLiftScore(0);
-                })
-
-            .build();
-
-        //parking position 1
-        TrajectorySequence park1= drive.trajectorySequenceBuilder(cycleHigh.end())
-            .strafeLeft(params.park12Inch)
-            .build();
-
-        //parking position 2 just stays where highCycle ends
-
-
-        //parking position 3
-        TrajectorySequence park3= drive.trajectorySequenceBuilder(cycleHigh.end())
-            .strafeRight(params.park36Inch)
-            .build();
-
+//        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
@@ -260,30 +125,19 @@ public class BlueTerminalAuto extends LinearOpMode {
             }
 
         }  // end of while
-        liftThread.start();
 
+        robot.autoLight.set(0);
         if(isStopRequested()) return;
 
         //score preload
-        drive.followTrajectorySequence(untilCycle);
+        drive.followTrajectorySequence(park);
 
-        //run 4 mid cycles
-        for(int i=0;i< 1;i++) {
-            drive.followTrajectorySequence(cycleMid);
-        }
-
-        //run 1 high cycle
-        drive.followTrajectorySequence(cycleHigh);
-
-        //parking logic
         if(parkPosition==1){
             drive.followTrajectorySequence(park1);
-        }else if(parkPosition==2){
-
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }
-liftThread.stop();
+
 
     }
     private void initVuforia() {

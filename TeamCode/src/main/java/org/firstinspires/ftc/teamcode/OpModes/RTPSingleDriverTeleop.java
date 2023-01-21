@@ -7,25 +7,24 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "FSM Single Driver Teleop Mode", group = "Competition")
+@TeleOp(name = "RTP Single Driver Teleop Mode", group = "Competition")
 
-public class FSMSingleDriverTeleop extends LinearOpMode {
+public class RTPSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
-    public enum LiftState {
-        LIFT_START,
-        LIFT_RUNNING,
-    };
-    FSMLiftTest.LiftState liftState= FSMLiftTest.LiftState.LIFT_START;
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        LinearOpMode myOpmode= this;
+        LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
         ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
@@ -43,43 +42,13 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
 
         waitForStart();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
-/*
-        robot.winchMotors.resetEncoder();
-*/
+
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
 
         while (opModeIsActive()) {
-            switch(liftState) {
-                case LIFT_START:
-                    if (gp1.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
-                        robot.winch.setTargetPosition(robot.LIFT_BOTTOM);
-                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
-                    } else if (gp1.isDown(GamepadKeys.Button.B)) {
-                        robot.winch.setTargetPosition(robot.LIFT_LOW);
-                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
-                    } else if (gp1.isDown(GamepadKeys.Button.X)) {
-                        robot.winch.setTargetPosition(robot.LIFT_MID);
-                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
-                    } else if (gp1.isDown(GamepadKeys.Button.Y)) {
-                        robot.winch.setTargetPosition(robot.LIFT_HIGH);
-                        liftState = FSMLiftTest.LiftState.LIFT_RUNNING;
-                    }
-                    break;
-
-                case LIFT_RUNNING:
-                    while (!robot.winch.atTargetPosition()) {
-                        robot.winch.set(robot.LIFT_POW);
-                    }
-                    robot.winch.stopMotor();
-                    liftState= FSMLiftTest.LiftState.LIFT_START;
-                    break;
-
-                default:
-                    liftState = FSMLiftTest.LiftState.LIFT_START;
-            }
             forwardPower=gp1.getLeftY();
             strafePower=gp1.getLeftX();
 
@@ -134,22 +103,28 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
             }
             //apply value to claw
             if (clawToggle) {
-                robot.servoGrabber.setPosition(robot.CLAW_OPEN);
+                lift.openClaw();
             } else {
-                robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
+                lift.closeClaw();
             }
 
-            /*rawPower lift control
-            if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1) {
-                liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1){
-                liftPower=gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
-            }else{
-                liftPower=0;
+            if (gp1.getButton(GamepadKeys.Button.B)){
+                liftPos= robot.LIFT_HIGH;
+            }else if(gp1.getButton(GamepadKeys.Button.Y)){
+                liftPos= robot.LIFT_MID;
+            }else if(gp1.getButton(GamepadKeys.Button.X)){
+                liftPos= robot.LIFT_LOW;
+            }else if(gp1.getButton(GamepadKeys.Button.LEFT_BUMPER)){
+                liftPos= robot.LIFT_BOTTOM;
             }
-             */
 
+            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.15){
+                liftPos+= robot.liftAdjust;
+            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
+                liftPos-= robot.liftAdjust;
+            }
 
+            lift.runTo(liftPos);
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
@@ -160,10 +135,10 @@ public class FSMSingleDriverTeleop extends LinearOpMode {
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);
             telemetry.addData("IMU Angles Y = ", robot.imu.getAngles()[1]);
             telemetry.addData("IMU Angles Z = ", robot.imu.getAngles()[2]);
-            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
-            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getPosition()/(2*Math.PI*0.7480314960629921));
+            telemetry.addData("Inches traveled forward/backward ", robot.forwardBackwardOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921)); //taken from odometry, long number is wheel radius in inches
+            telemetry.addData("Inches traveled side/side ", robot.sideSideOdo.getCurrentPosition()/(2*Math.PI*0.7480314960629921));
             telemetry.update();
 
         }   // end of while(opModeIsActive)
     }   // end of runOpMode()
-}       // end of MSTeleop class
+}
