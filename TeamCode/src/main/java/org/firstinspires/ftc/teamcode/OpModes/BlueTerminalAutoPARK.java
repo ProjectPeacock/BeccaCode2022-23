@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,13 +13,14 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.Libs.AutoClass;
 import org.firstinspires.ftc.teamcode.Libs.AutoParams;
+import org.firstinspires.ftc.teamcode.Libs.AutoThreadClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
 @Autonomous(name = "Auto: Blue Terminal-Park", group = "Competition")
-public class ParkingAutoBothTerminals extends LinearOpMode {
+public class BlueTerminalAutoPARK extends LinearOpMode {
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
