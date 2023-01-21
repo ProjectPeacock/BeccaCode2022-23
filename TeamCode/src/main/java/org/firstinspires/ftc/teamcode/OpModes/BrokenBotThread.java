@@ -122,7 +122,7 @@ public class BrokenBotThread extends LinearOpMode {
                 robot.mecanum.driveRobotCentric(gp1.getLeftX(), gp1.getLeftY(), -gp1.getRightX() * robot.TURN_MULTIPLIER, true);
             }
 
-            /*
+
             if(clawToggleButton.isDown()&&clawReady){
                 clawToggle=!clawToggle;
             }
@@ -132,12 +132,12 @@ public class BrokenBotThread extends LinearOpMode {
                 clawReady=false;
             }
             if (clawToggle) {
-                robot.servoGrabber.setPosition(l1_CLAW_OPEN);
+                robot.servoGrabber.setPosition(robot.CLAW_OPEN);
             } else {
-                robot.servoGrabber.setPosition(l2_CLAW_CLOSE);
+                robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
             }
 
-             */
+
 
 /*
             if(gp1.isDown(GamepadKeys.Button.DPAD_UP)) {
