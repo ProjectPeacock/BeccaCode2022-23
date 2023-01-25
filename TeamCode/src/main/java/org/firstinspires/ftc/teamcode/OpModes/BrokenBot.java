@@ -158,8 +158,6 @@ public class BrokenBot extends LinearOpMode {
             telemetry.addData("Left Stick Y = ", gp1.getLeftY());
             telemetry.addData("Right Stick X = ", gp1.getRightX());
             telemetry.addData("Right Stick Y = ", gp1.getRightY());
-            telemetry.addData("X Axis Odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
-            telemetry.addData("Y Axis Odometry = ", robot.sideSideOdo.getCurrentPosition());
             telemetry.update();
 
             // post telemetry to FTC Dashboard as well
@@ -181,8 +179,8 @@ public class BrokenBot extends LinearOpMode {
             dashTelemetry.put("16 - motorRR encoder = ", robot.motorRR.getCurrentPosition());
             dashTelemetry.put("17 - motorLiftFront position = ", robot.motorLiftFront.getCurrentPosition());
             dashTelemetry.put("18 - motorLiftRear position = ", robot.motorLiftFront.getCurrentPosition());
-            dashTelemetry.put("19 - x axis odometry = ", robot.sideSideOdo.getCurrentPosition());
-            dashTelemetry.put("20 - y axis odometry = ", robot.forwardBackwardOdo.getCurrentPosition());
+            dashTelemetry.put("19 - L/R Odometer = ",robot.motorRR.getCurrentPosition());
+            dashTelemetry.put("20 - F/B Odometer = ",robot.motorLF.getCurrentPosition());
             dashboard.sendTelemetryPacket(dashTelemetry);
 
         }   // end of while(opModeIsActive)

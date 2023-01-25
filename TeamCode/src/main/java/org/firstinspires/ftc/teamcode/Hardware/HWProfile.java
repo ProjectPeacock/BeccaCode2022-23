@@ -56,8 +56,6 @@ public class HWProfile {
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
-    public DcMotorEx forwardBackwardOdo = null;
-    public DcMotorEx sideSideOdo = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
