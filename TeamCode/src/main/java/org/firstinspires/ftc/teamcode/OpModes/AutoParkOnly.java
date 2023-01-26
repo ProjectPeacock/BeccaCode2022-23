@@ -94,6 +94,7 @@ public class AutoParkOnly extends LinearOpMode {
 
 //        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
+            robot.autoLight.set(-1);
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.

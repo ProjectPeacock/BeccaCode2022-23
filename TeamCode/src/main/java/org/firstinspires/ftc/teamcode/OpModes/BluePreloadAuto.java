@@ -82,10 +82,10 @@ public class BluePreloadAuto extends LinearOpMode {
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(28.5,-30),Math.toRadians(120))
+                .splineTo(new Vector2d(28,-30),Math.toRadians(120))
                 //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
-                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::openClaw)
-                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
+                .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)
@@ -95,16 +95,17 @@ public class BluePreloadAuto extends LinearOpMode {
             .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
-                .strafeLeft(24)
+                .lineToSplineHeading(new Pose2d(50,-12,Math.toRadians(90)))
+                //.strafeLeft(24)
                 .waitSeconds(0.25)
                 .build();
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
-                .strafeRight(24)
+                .lineToSplineHeading(new Pose2d(12,-12,Math.toRadians(90)))
                 .waitSeconds(0.25)
                 .build();
 
-//        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
+            robot.autoLight.set(-1);
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -149,7 +150,8 @@ public class BluePreloadAuto extends LinearOpMode {
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }
-
+        telemetry.addData("heading:",robot.imu.getHeading());
+        telemetry.update();
 
     }
     private void initVuforia() {

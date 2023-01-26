@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.List;
 
 @Autonomous(name = " Test Auto: Blue Terminal", group = "Competition")
-@Disabled
+
 public class TestBlueTerminalAuto extends LinearOpMode {
     /*
 
@@ -87,9 +87,9 @@ public class TestBlueTerminalAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(28.5,-31),Math.toRadians(120))
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(2);})
-                .waitSeconds(0.25)
+                .splineTo(new Vector2d(28,-30),Math.toRadians(120))
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()->{liftControl.moveLiftScore(2);})
+                .waitSeconds(0.35)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::moveLiftGrab)
                 .turn(Math.toRadians(-60))
