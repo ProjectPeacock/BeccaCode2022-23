@@ -42,7 +42,7 @@ public class HWProfile {
     final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
-    final public int LIFT_MID=850;
+    final public int LIFT_MID=825;
     final public int LIFT_HIGH=1300;
 
     /* Public OpMode members. */
@@ -56,8 +56,6 @@ public class HWProfile {
     public ServoEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
-    public DcMotorEx forwardBackwardOdo = null;
-    public DcMotorEx sideSideOdo = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;

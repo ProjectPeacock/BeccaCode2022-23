@@ -81,10 +81,10 @@ public class RedPreloadAuto extends LinearOpMode {
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(-27.5,-30),Math.toRadians(60))
+                .splineTo(new Vector2d(-27.5,-29.5),Math.toRadians(60))
                 //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
-                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::openClaw)
-                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
+                .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeLeft(6)
@@ -104,6 +104,7 @@ public class RedPreloadAuto extends LinearOpMode {
 
 //        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
+            robot.autoLight.set(-1);
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.

@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class BackAndForth extends LinearOpMode {
 
     public static double DISTANCE = 50;
-
+    public int loopcount=0;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -44,7 +44,7 @@ public class BackAndForth extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        while (opModeIsActive() && !isStopRequested()&&loopcount<20) {
             drive.followTrajectory(trajectoryForward);
             drive.followTrajectory(trajectoryBackward);
         }

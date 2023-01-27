@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class DriveConstantsWORKING {
 
     /*
      * These are motor constants that should be listed online for your motors.
@@ -109,8 +109,8 @@ public class DriveConstants {
      * https://github.com/acmerobotics/road-runner-quickstart/issues/91
      
      */
-    public static double MAX_VEL = 75; //89.236
-    public static double MAX_ACCEL = 35; //90
+    public static double MAX_VEL = 60; //89.236
+    public static double MAX_ACCEL = 45; //90
     public static double MAX_ANG_VEL = 17.927212540948645;
     public static double MAX_ANG_ACCEL = Math.toRadians(360);
 
