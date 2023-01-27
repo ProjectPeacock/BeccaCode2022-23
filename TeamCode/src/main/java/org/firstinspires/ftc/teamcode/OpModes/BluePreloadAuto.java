@@ -82,7 +82,7 @@ public class BluePreloadAuto extends LinearOpMode {
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(28,-30),Math.toRadians(120))
+                .splineTo(new Vector2d(27.5,-29.5),Math.toRadians(120))
                 //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
@@ -95,12 +95,11 @@ public class BluePreloadAuto extends LinearOpMode {
             .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
-                .lineToSplineHeading(new Pose2d(50,-12,Math.toRadians(90)))
-                //.strafeLeft(24)
+                .strafeLeft(24)
                 .waitSeconds(0.25)
                 .build();
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
-                .lineToSplineHeading(new Pose2d(12,-12,Math.toRadians(90)))
+                .strafeRight(24)
                 .waitSeconds(0.25)
                 .build();
 
