@@ -41,7 +41,7 @@ public class AutoParams {
     public final int diffConstant = 20;
 
     //staring pose X and Y
-    public final double startPoseX=35.25;
+    public final double startPoseX=34.25;
     public final double startPoseY=-64;
 
 //preload parameters
