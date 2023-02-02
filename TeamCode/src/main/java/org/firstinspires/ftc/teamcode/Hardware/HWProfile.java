@@ -22,7 +22,7 @@ public class HWProfile {
     public final String tfliteFileName = "PP_Generic_SS.tflite";
 
     //max difference between front and rear lift motors
-    public final int rearLiftMotorTol = 70;
+    public final int rearLiftMotorTol = 8;
 
     //claw positions
     public final double CLAW_OPEN =0.3;
@@ -37,7 +37,7 @@ public class HWProfile {
     public final int ANTI_TIP_AXIS=1;
 
     //lift constants
-    final public int liftAdjust=10;
+    final public int liftAdjust=15;
     final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;

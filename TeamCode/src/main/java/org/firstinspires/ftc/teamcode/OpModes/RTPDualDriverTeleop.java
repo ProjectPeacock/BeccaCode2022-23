@@ -5,20 +5,17 @@ import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "RTP Single Driver Teleop Mode", group = "Competition")
+@TeleOp(name = "RTP Dual Driver Teleop Mode", group = "Competition")
 //@Disabled
-public class RTPSingleDriverTeleop extends LinearOpMode {
+public class RTPDualDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
     @Override
@@ -28,8 +25,11 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
         LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
-        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.LEFT_BUMPER);
+        GamepadEx gp2 = new GamepadEx(gamepad2);
+        ButtonReader aReader = new ButtonReader(gp2, GamepadKeys.Button.LEFT_BUMPER);
         ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
+
+        ButtonReader aReader2 = new ButtonReader(gp1, GamepadKeys.Button.LEFT_BUMPER);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
@@ -93,12 +93,12 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
 
 
             //claw control
-            if(aReader.isDown()&&clawReady){
+            if((aReader.isDown()&&clawReady)||(aReader2.isDown()&&clawReady)){
                 clawToggle=!clawToggle;
             }
 
             //forces claw to only open or close if button is pressed once, not held
-            if(!aReader.isDown()){
+            if(!aReader.isDown()&&!aReader2.isDown()){
                 clawReady=true;
             }else{
                 clawReady=false;
@@ -112,25 +112,25 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
             }
 
 
-            if (gp1.getButton(GamepadKeys.Button.B)){
+            if (gp2.getButton(GamepadKeys.Button.B)){
                 liftPos= robot.LIFT_LOW;
-            }else if(gp1.getButton(GamepadKeys.Button.Y)){
+            }else if(gp2.getButton(GamepadKeys.Button.Y)){
                 liftPos= robot.LIFT_HIGH;
-            }else if(gp1.getButton(GamepadKeys.Button.X)){
+            }else if(gp2.getButton(GamepadKeys.Button.X)){
                 liftPos= robot.LIFT_MID;
-            }else if(gp1.getButton(GamepadKeys.Button.A)){
+            }else if(gp2.getButton(GamepadKeys.Button.A)){
                 liftPos= robot.LIFT_BOTTOM;
             }
 
-            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.15){
+            if(gp2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.15){
                 liftPos+= robot.liftAdjust;
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
+            }else if(gp2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
                 liftPos-= robot.liftAdjust;
             }
+
             if(liftPos<0){
                 liftPos=0;
             }
-
             lift.runTo(liftPos);
 
             // Provide user feedback

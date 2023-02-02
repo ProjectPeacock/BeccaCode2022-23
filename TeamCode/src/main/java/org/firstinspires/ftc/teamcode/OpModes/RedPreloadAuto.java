@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -20,6 +23,10 @@ import java.util.List;
 
 @Autonomous(name = "Red Preload Auto", group = "Competition")
 public class RedPreloadAuto extends LinearOpMode {
+    FtcDashboard dashboard;
+    TelemetryPacket dashTelemetry = new TelemetryPacket();
+    public static double preloadX = 30.5;
+    public static double preloadY = -26;
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -59,6 +66,9 @@ public class RedPreloadAuto extends LinearOpMode {
         initVuforia();
         initTfod();
         robot.init(hardwareMap);
+        dashboard = FtcDashboard.getInstance();
+        TelemetryPacket dashTelemetry = new TelemetryPacket();
+
 
         if (tfod != null) {
             tfod.activate();
@@ -74,24 +84,24 @@ public class RedPreloadAuto extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose= new Pose2d(-params.startPoseX,params.startPoseY,Math.toRadians(90));
+        Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
-            //close claw to grab preload
-            .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                //close claw to grab preload
+                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(-27.5,-29.5),Math.toRadians(60))
+                .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(60))
                 //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
-                .strafeLeft(6)
-                .turn(Math.toRadians(30))
-                .lineToConstantHeading(new Vector2d(-36,-12))
+                .strafeRight(6)
+                .turn(Math.toRadians(-30))
+                .lineToConstantHeading(new Vector2d(36,-12))
                 .waitSeconds(0.25)
-            .build();
+                .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
                 .strafeLeft(24)
@@ -102,7 +112,6 @@ public class RedPreloadAuto extends LinearOpMode {
                 .waitSeconds(0.25)
                 .build();
 
-//        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
             robot.autoLight.set(-1);
             if (tfod != null) {
@@ -138,6 +147,21 @@ public class RedPreloadAuto extends LinearOpMode {
         }  // end of while
 
         waitForStart();
+
+        dashTelemetry.put("01 - IMU Angle X = ", robot.imu.getAngles()[0]);
+        dashTelemetry.put("02 - IMU Angle Y = ", robot.imu.getAngles()[1]);
+        dashTelemetry.put("03 - IMU Angle Z = ", robot.imu.getAngles()[2]);
+        dashTelemetry.put("04 - Lift Front Encoder Value = ", robot.motorLiftFront.getCurrentPosition());
+        dashTelemetry.put("05 - Lift Rear Encoder Value = ", robot.motorLiftRear.getCurrentPosition());
+        dashTelemetry.put("06 - Claw Value = ", robot.servoGrabber.getPosition());
+        dashTelemetry.put("07 - GP1.Button.A = ", "RESET LIFT");
+        dashTelemetry.put("08 - GP1.Button.B = ", "LIFT LOW JUNCTION");
+        dashTelemetry.put("09 - GP1.Button.X = ", "LIFT MID JUNCTION");
+        dashTelemetry.put("10 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
+        dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
+        dashboard.sendTelemetryPacket(dashTelemetry);
+
+
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 
@@ -149,7 +173,8 @@ public class RedPreloadAuto extends LinearOpMode {
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }
-
+        telemetry.addData("heading:",robot.imu.getHeading());
+        telemetry.update();
 
     }
     private void initVuforia() {
