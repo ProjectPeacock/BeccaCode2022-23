@@ -92,7 +92,7 @@ public class BluePreloadAuto extends LinearOpMode {
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
                 .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
-                //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
+                //.UNSTABLE_addTemporalMarkerOffset(-0.025,()->{clawControl.moveLiftScore(2,100);})
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
                 .back(6)

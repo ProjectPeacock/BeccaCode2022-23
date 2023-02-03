@@ -54,6 +54,16 @@ public class LiftControlClass {
         }
     }
 
+    public void moveLiftScore(int pos, int offset){
+        if(pos==1){
+            runTo(robot.LIFT_LOW-offset);
+        }else if(pos==2){
+            runTo(robot.LIFT_MID-offset);
+        }else if(pos==3){
+            runTo(robot.LIFT_HIGH-offset);
+        }
+    }
+
     //method for moving lift to retrieve cones
     //cyclesRun corresponds to how many cycles have been completed. This class keeps track of how many cycles have been completed internally
     public void moveLiftGrab(){

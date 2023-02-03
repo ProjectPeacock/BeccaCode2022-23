@@ -31,8 +31,8 @@ public class AutoParams {
     public final double liftPow=1;
 
     //lift heights for grabbing cones from stack
-    public final int cycle1=250;
-    public final int cycle2=200;
+    public final int cycle1=225;
+    public final int cycle2=180;
     public final int cycle3=200;
     public final int cycle4=100;
     public final int cycle5=0;

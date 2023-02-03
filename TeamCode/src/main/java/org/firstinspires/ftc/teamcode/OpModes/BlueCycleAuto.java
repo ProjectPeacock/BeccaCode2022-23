@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -20,6 +23,10 @@ import java.util.List;
 
 @Autonomous(name = "Blue Cycle Auto", group = "Competition")
 public class BlueCycleAuto extends LinearOpMode {
+    FtcDashboard dashboard;
+    TelemetryPacket dashTelemetry = new TelemetryPacket();
+    public static double preloadX = 28.5;
+    public static double preloadY = -30;
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -59,6 +66,9 @@ public class BlueCycleAuto extends LinearOpMode {
         initVuforia();
         initTfod();
         robot.init(hardwareMap);
+        dashboard = FtcDashboard.getInstance();
+        TelemetryPacket dashTelemetry = new TelemetryPacket();
+
 
         if (tfod != null) {
             tfod.activate();
@@ -78,20 +88,36 @@ public class BlueCycleAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
-            //close claw to grab preload
-            .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                //close claw to grab preload
+                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(28.5,-30),Math.toRadians(120))
-                //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
-                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::openClaw)
-                .waitSeconds(0.25)
+                .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
+                //.UNSTABLE_addTemporalMarkerOffset(-0.25,()->{clawControl.moveLiftScore(2,100);})
+                .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
+                .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)
-                .turn(Math.toRadians(-30))
-                .lineToConstantHeading(new Vector2d(36,-12))
                 .waitSeconds(0.25)
-            .build();
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::moveLiftGrab)
+                .turn(Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(62,-11.5,Math.toRadians(0)),Math.toRadians(0))
+                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.125, clawControl::closeClaw)
+                .build();
+
+        TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(park.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(2);})
+                .back(6)
+                .splineToSplineHeading(new Pose2d(32,-17.5,Math.toRadians(220)),Math.toRadians(190))
+                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
+                .back(1)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, clawControl::moveLiftGrab)
+                .splineToSplineHeading(new Pose2d(61,-11.5,Math.toRadians(0)),Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,clawControl::closeClaw)
+                .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
                 .strafeLeft(24)
@@ -102,8 +128,8 @@ public class BlueCycleAuto extends LinearOpMode {
                 .waitSeconds(0.25)
                 .build();
 
-//        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
+            robot.autoLight.set(-1);
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -137,18 +163,26 @@ public class BlueCycleAuto extends LinearOpMode {
         }  // end of while
 
         waitForStart();
+
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 
         //score preload
         drive.followTrajectorySequence(park);
+        for(int i=0;i<3;i++) {
+            drive.followTrajectorySequence(cycleMid);
+        }
 
+        /*
         if(parkPosition==1){
             drive.followTrajectorySequence(park1);
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }
+        */
 
+        telemetry.addData("heading:",robot.imu.getHeading());
+        telemetry.update();
 
     }
     private void initVuforia() {
