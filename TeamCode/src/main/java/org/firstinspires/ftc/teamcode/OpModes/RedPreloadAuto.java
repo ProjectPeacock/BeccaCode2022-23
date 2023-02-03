@@ -25,8 +25,8 @@ import java.util.List;
 public class RedPreloadAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
-    public static double preloadX = 30.5;
-    public static double preloadY = -26;
+    public static double preloadX = -25.5;
+    public static double preloadY = -30;
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -84,7 +84,7 @@ public class RedPreloadAuto extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
+        Pose2d startPose= new Pose2d(-params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
@@ -97,9 +97,9 @@ public class RedPreloadAuto extends LinearOpMode {
                 .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
-                .strafeRight(6)
-                .turn(Math.toRadians(-30))
-                .lineToConstantHeading(new Vector2d(36,-12))
+                .strafeLeft(6)
+                .turn(Math.toRadians(30))
+                .lineToConstantHeading(new Vector2d(-33,-12))
                 .waitSeconds(0.25)
                 .build();
 

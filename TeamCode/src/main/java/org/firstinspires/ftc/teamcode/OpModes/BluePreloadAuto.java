@@ -25,8 +25,8 @@ import java.util.List;
 public class BluePreloadAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
-    public static double preloadX = 30.5;
-    public static double preloadY = -26;
+    public static double preloadX = 28.5;
+    public static double preloadY = -30;
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
