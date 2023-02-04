@@ -102,7 +102,7 @@ public class BluePreloadAuto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)
                 .turn(Math.toRadians(-30))
-                .lineToConstantHeading(new Vector2d(36,-14))
+                .lineToConstantHeading(new Vector2d(36,-12))
                 .waitSeconds(0.25)
             .build();
 
