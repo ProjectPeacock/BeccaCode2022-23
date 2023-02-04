@@ -81,6 +81,7 @@ public class BlueTerminalAuto extends LinearOpMode {
             .UNSTABLE_addTemporalMarkerOffset(0, ()->{
                 clawControl.closeClaw();
             })
+                
             .forward(6)
             .turn(Math.toRadians(-90))
             .forward(24)

@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.List;
 
-@Autonomous(name = "Red Score Auto", group = "Competition")
-public class RedScoreAuto extends LinearOpMode {
+@Autonomous(name = "Red Terminal Auto", group = "Competition")
+public class RedTerminalAuto extends LinearOpMode {
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING

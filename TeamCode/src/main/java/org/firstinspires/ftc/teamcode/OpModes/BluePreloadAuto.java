@@ -19,14 +19,16 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 @Autonomous(name = "Blue Preload Auto", group = "Competition")
 public class BluePreloadAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
-    public static double preloadX = 28.5;
-    public static double preloadY = -30;
+    public static double preloadX = 26.5;
+    public static double preloadY = -31;
+    private String configFile="autoGyroValue.txt";
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -90,25 +92,26 @@ public class BluePreloadAuto extends LinearOpMode {
         TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                .waitSeconds(0.35)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
                 .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
-                //.UNSTABLE_addTemporalMarkerOffset(-0.025,()->{clawControl.moveLiftScore(2,100);})
+
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)
                 .turn(Math.toRadians(-30))
-                .lineToConstantHeading(new Vector2d(36,-12))
+                .lineToConstantHeading(new Vector2d(36,-14))
                 .waitSeconds(0.25)
             .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
-                .strafeLeft(24)
+                .strafeLeft(18)
                 .waitSeconds(0.25)
                 .build();
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
-                .strafeRight(24)
+                .strafeRight(18)
                 .waitSeconds(0.25)
                 .build();
 
@@ -175,7 +178,6 @@ public class BluePreloadAuto extends LinearOpMode {
         }
         telemetry.addData("heading:",robot.imu.getHeading());
         telemetry.update();
-
     }
     private void initVuforia() {
         /*

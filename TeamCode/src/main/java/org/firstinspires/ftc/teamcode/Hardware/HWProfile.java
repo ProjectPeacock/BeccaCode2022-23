@@ -28,6 +28,10 @@ public class HWProfile {
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.55;
 
+    //odometer positions
+    public final double ODO_UP=0.25;
+    public final double ODO_DOWN=0.95;
+
     //drive constants
     public final double TURN_MULTIPLIER = 0.75;
 
@@ -43,7 +47,7 @@ public class HWProfile {
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
     final public int LIFT_MID=825;
-    final public int LIFT_HIGH=1300;
+    final public int LIFT_HIGH=1250;
 
     /* Public OpMode members. */
     public MotorEx motorLF = null;
@@ -54,6 +58,7 @@ public class HWProfile {
     public DcMotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoEx servoGrabber = null;
+    public ServoEx odometryServo = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
 
@@ -114,7 +119,7 @@ public class HWProfile {
 
         //init servos
         servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);
-
+        odometryServo = new SimpleServo(ahwMap,"odometryServo",0,1,AngleUnit.RADIANS);
         //init imu
         imu = new RevIMU(ahwMap);
         imu.init();

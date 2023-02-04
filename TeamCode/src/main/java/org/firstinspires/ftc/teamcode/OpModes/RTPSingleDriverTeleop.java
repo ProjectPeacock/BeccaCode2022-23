@@ -41,7 +41,9 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
         double forwardPower=0, strafePower=0, liftPower=.5;
         int liftPos=0;
 
+
         waitForStart();
+        lift.raiseOdometer();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
 
         for (LynxModule hub : allHubs) {
