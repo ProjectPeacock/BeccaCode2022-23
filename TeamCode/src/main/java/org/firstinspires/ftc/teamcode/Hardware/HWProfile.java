@@ -47,7 +47,7 @@ public class HWProfile {
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
     final public int LIFT_MID=825;
-    final public int LIFT_HIGH=1250;
+    final public int LIFT_HIGH=1150;
 
     /* Public OpMode members. */
     public MotorEx motorLF = null;

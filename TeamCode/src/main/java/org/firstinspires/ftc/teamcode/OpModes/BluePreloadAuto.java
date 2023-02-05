@@ -26,7 +26,7 @@ import java.util.List;
 public class BluePreloadAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
-    public static double preloadX = 26.5;
+    public static double preloadX = 28.5;
     public static double preloadY = -31;
     private String configFile="autoGyroValue.txt";
     /*
@@ -107,11 +107,11 @@ public class BluePreloadAuto extends LinearOpMode {
             .build();
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
-                .strafeLeft(18)
+                .strafeLeft(24)
                 .waitSeconds(0.25)
                 .build();
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
-                .strafeRight(18)
+                .strafeRight(24)
                 .waitSeconds(0.25)
                 .build();
 

@@ -125,7 +125,7 @@ public class BrokenBot extends LinearOpMode {
             }
 
             if(gp1.isDown(GamepadKeys.Button.X)){
-                robot.odometryServo.setPosition(robot.ODO_DOWN);
+                robot.servoGrabber.disable();
             }
 
             if(gp1.isDown(GamepadKeys.Button.Y)){

@@ -8,17 +8,15 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "default", group = "Development")
-//@Disabled
-public class RTPSingleDriverTeleop extends LinearOpMode {
+@TeleOp(name = "Toggle Single Driver Mode", group = "Competition")
+@Disabled
+public class ToggleSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
     @Override
@@ -28,19 +26,19 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
         LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
-        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.LEFT_BUMPER);
-        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
+        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
+        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.DPAD_RIGHT);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
-        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false;
+        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
 
-        int liftPos=0;
+        int liftPos=0, bumpCount=0;
 
 
         waitForStart();
@@ -114,20 +112,44 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
                 lift.closeClaw();
             }
 
+            //lift toggles
+            if(!gp1.isDown(GamepadKeys.Button.RIGHT_BUMPER)){
+                toggleReadyUp=true;
+            }
+            if(!gp1.isDown(GamepadKeys.Button.LEFT_BUMPER)){
+                toggleReadyDown=true;
+            }
 
-            if (gp1.getButton(GamepadKeys.Button.B)){
-                liftPos= robot.LIFT_LOW;
-            }else if(gp1.getButton(GamepadKeys.Button.Y)){
-                liftPos= robot.LIFT_HIGH;
-            }else if(gp1.getButton(GamepadKeys.Button.X)){
-                liftPos= robot.LIFT_MID;
-            }else if(gp1.getButton(GamepadKeys.Button.A)){
+            if(gp1.isDown(GamepadKeys.Button.B)){
+                bumpCount=0;
                 liftPos= robot.LIFT_BOTTOM;
             }
 
-            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.15){
+            if (gp1.getButton(GamepadKeys.Button.RIGHT_BUMPER)&&toggleReadyUp){
+                toggleReadyUp=false;
+                if(bumpCount<3){
+                    bumpCount++;
+                }
+            }else if(gp1.getButton(GamepadKeys.Button.LEFT_BUMPER)&&toggleReadyDown){
+                toggleReadyDown=false;
+                if(bumpCount>0){
+                    bumpCount--;
+                }
+            }
+
+            if(bumpCount==0){
+                liftPos= robot.LIFT_BOTTOM;
+            }else if(bumpCount==1){
+                liftPos=robot.LIFT_LOW;
+            }else if(bumpCount==2){
+                liftPos= robot.LIFT_MID;
+            }else if(bumpCount==3){
+                liftPos= robot.LIFT_HIGH;
+            }
+
+            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
                 liftPos+= robot.liftAdjust;
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
+            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
                 liftPos-= robot.liftAdjust;
             }
             if(liftPos<0){

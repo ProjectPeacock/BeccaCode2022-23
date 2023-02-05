@@ -26,7 +26,7 @@ public class RedPreloadAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
     public static double preloadX = -25.5;
-    public static double preloadY = -30;
+    public static double preloadY = -31;
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
