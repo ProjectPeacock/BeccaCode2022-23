@@ -19,8 +19,8 @@ public class AutoParams {
     HWProfile robot = new HWProfile();
 
     //number of cycles
-    public final int numMidCycles=1;
-    public final int numHighCycles=5-numMidCycles-1;
+    public final int numMidCycles=3;
+    public final int numHighCycles=0;
     //claw open time
     public final double timeOpen=0.35;
 
@@ -30,12 +30,14 @@ public class AutoParams {
     //lift power
     public final double liftPow=1;
 
+    public final int liftTicksPerInch=38;
+
     //lift heights for grabbing cones from stack
-    public final int cycle1=225;
-    public final int cycle2=180;
-    public final int cycle3=200;
-    public final int cycle4=100;
-    public final int cycle5=0;
+    public final int cycle1=(int)5.5*liftTicksPerInch;
+    public final int cycle2=(int)4.5*liftTicksPerInch;
+    public final int cycle3=(int)3.5*liftTicksPerInch;
+    public final int cycle4=(int)2.375*liftTicksPerInch;
+    public final int cycle5=(int)0;
 
     //amount of difference between lift motor targets
     public final int diffConstant = 20;

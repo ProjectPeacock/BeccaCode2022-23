@@ -26,6 +26,7 @@ import java.util.List;
 public class TestBlueTerminalAuto extends LinearOpMode {
     /*
 
+
     OPMODE MAP - PLEASE READ BEFORE EDITING
 
     This opMode uses TrajectorySequences from RoadRunner. They are made to be run back to back.
@@ -37,6 +38,8 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
      */
 
+    public static double preloadX = 27.5;
+    public static double preloadY = -30;
     //lift control init
     public final static HWProfile robot = new HWProfile();
     private LinearOpMode myOpmode=this;
@@ -87,45 +90,61 @@ public class TestBlueTerminalAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(28,-30),Math.toRadians(120))
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()->{liftControl.moveLiftScore(2);})
+                .UNSTABLE_addTemporalMarkerOffset(0, liftControl::closeClaw)
+                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{liftControl.moveLiftScore(2);})
+                .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
+
+                .UNSTABLE_addTemporalMarkerOffset(0.35, liftControl::openClaw)
                 .waitSeconds(0.35)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::moveLiftGrab)
-                .turn(Math.toRadians(-60))
-                .splineToLinearHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
-                .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::closeClaw)
+                .back(3)
+                .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{liftControl.moveLiftGrab();})
+                .turn(Math.toRadians(-45))
+                .splineToLinearHeading(new Pose2d(60.5,-10,Math.toRadians(0)),Math.toRadians(0))
+
+                .UNSTABLE_addTemporalMarkerOffset(0, liftControl::closeClaw)
+                .waitSeconds(0.35)
                 .build();
 
         TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(2);})
                 .back(6)
-                .splineToSplineHeading(new Pose2d(30,-17.5,Math.toRadians(220)),Math.toRadians(190))
+                .splineToSplineHeading(new Pose2d(31.5,-18.5,Math.toRadians(220)),Math.toRadians(190))
                 .waitSeconds(0.25)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .back(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.25, liftControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(60.5,-10,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0,liftControl::closeClaw)
+                .waitSeconds(0.5)
                 .build();
 
         TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(3);})
                 .back(6)
-                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(17220))
+                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(220))
                 .waitSeconds(0.25)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .back(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.25, liftControl::moveLiftGrab)
                 .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0,liftControl::closeClaw)
+                .waitSeconds(0.5)
+                .build();
+
+        TrajectorySequence finalMid = drive.trajectorySequenceBuilder(cycleMid.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(2);})
+                .back(6)
+                .splineToSplineHeading(new Pose2d(31.5,-18.5,Math.toRadians(220)),Math.toRadians(190))
+                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{liftControl.openClaw();})
+                .back(1)
                 .build();
 
         TrajectorySequence finalHigh = drive.trajectorySequenceBuilder(cycleHigh.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(3);})
                 .back(6)
-                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(17220))
+                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(220))
                 .waitSeconds(0.25)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{liftControl.openClaw();})
                 .back(1)
@@ -148,6 +167,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
         while(!isStarted() && !isStopRequested()) {
             if (tfod != null) {
+                robot.autoLight.set(-1);
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -179,7 +199,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
         }  // end of while
 
-
+        robot.autoLight.set(0);
         if(isStopRequested()) return;
 
         //score preload
@@ -187,11 +207,14 @@ public class TestBlueTerminalAuto extends LinearOpMode {
         for(int i=0;i<params.numMidCycles;i++){
             drive.followTrajectorySequence(cycleMid);
         }
+
+        /*
         for(int i=0;i<params.numHighCycles;i++){
             drive.followTrajectorySequence(cycleHigh);
         }
+        */
 
-        drive.followTrajectorySequence(finalHigh);
+        drive.followTrajectorySequence(finalMid);
 
         if(parkPos==1){
             drive.followTrajectorySequence(park1);

@@ -26,7 +26,7 @@ public class HWProfile {
 
     //claw positions
     public final double CLAW_OPEN =0.3;
-    public final double CLAW_CLOSE =0.55;
+    public final double CLAW_CLOSE =0.65;
 
     //odometer positions
     public final double ODO_UP=0.25;
@@ -46,7 +46,7 @@ public class HWProfile {
     final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
-    final public int LIFT_MID=825;
+    final public int LIFT_MID=805;
     final public int LIFT_HIGH=1150;
 
     /* Public OpMode members. */
