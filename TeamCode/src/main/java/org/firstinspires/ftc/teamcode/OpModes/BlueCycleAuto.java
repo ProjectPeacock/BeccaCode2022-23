@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -26,7 +25,8 @@ public class BlueCycleAuto extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
     public static double preloadX = 28.5;
-    public static double preloadY = -30;
+    public static double preloadY = -31;
+    private String configFile="autoGyroValue.txt";
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -87,45 +87,80 @@ public class BlueCycleAuto extends LinearOpMode {
         Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
-        TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
-                //close claw to grab preload
+        TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                .waitSeconds(0.5)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
                 .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
-                //.UNSTABLE_addTemporalMarkerOffset(-0.25,()->{clawControl.moveLiftScore(2,100);})
+
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
-                .back(6)
-                .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
-                .strafeRight(6)
-                .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
-                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::moveLiftGrab)
-                .turn(Math.toRadians(-30))
-                .splineToLinearHeading(new Pose2d(62,-11.5,Math.toRadians(0)),Math.toRadians(0))
-                .waitSeconds(0.25)
-                .UNSTABLE_addTemporalMarkerOffset(-0.125, clawControl::closeClaw)
+                .back(3)
+                .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftGrab();})
+                .turn(Math.toRadians(-45))
+                .splineToLinearHeading(new Pose2d(61,-10,Math.toRadians(0)),Math.toRadians(0))
+
+                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                .waitSeconds(0.35)
                 .build();
 
-        TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(park.end())
+        TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(2);})
                 .back(6)
-                .splineToSplineHeading(new Pose2d(32,-17.5,Math.toRadians(220)),Math.toRadians(190))
+                .splineToSplineHeading(new Pose2d(31.5,-18.5,Math.toRadians(220)),Math.toRadians(190))
                 .waitSeconds(0.25)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
                 .back(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.25, clawControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(61,-11.5,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(61,-10,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0,clawControl::closeClaw)
+                .waitSeconds(0.5)
                 .build();
 
-        TrajectorySequence park1 = drive.trajectorySequenceBuilder(park.end())
-                .strafeLeft(24)
+        TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(3);})
+                .back(6)
+                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(220))
                 .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
+                .back(1)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, clawControl::moveLiftGrab)
+                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(0)),Math.toRadians(0))
+                .UNSTABLE_addTemporalMarkerOffset(0,clawControl::closeClaw)
+                .waitSeconds(0.5)
                 .build();
-        TrajectorySequence park3 = drive.trajectorySequenceBuilder(park.end())
-                .strafeRight(24)
+
+        TrajectorySequence finalMid = drive.trajectorySequenceBuilder(cycleMid.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(2);})
+                .back(6)
+                .splineToSplineHeading(new Pose2d(31.5,-18.5,Math.toRadians(220)),Math.toRadians(190))
                 .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{clawControl.openClaw();})
+                .back(1)
+                .build();
+
+        TrajectorySequence finalHigh = drive.trajectorySequenceBuilder(cycleHigh.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(3);})
+                .back(6)
+                .splineToSplineHeading(new Pose2d(30,-6.5,Math.toRadians(130)),Math.toRadians(220))
+                .waitSeconds(0.25)
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{clawControl.openClaw();})
+                .back(1)
+                .build();
+
+        TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalHigh.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
+                .splineToSplineHeading(new Pose2d(12,-14,Math.toRadians(90)),Math.toRadians(180))
+                .build();
+
+        TrajectorySequence park2 = drive.trajectorySequenceBuilder(finalHigh.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
+                .splineToSplineHeading(new Pose2d(36,-14,Math.toRadians(90)),Math.toRadians(130))
+                .build();
+
+        TrajectorySequence park3 = drive.trajectorySequenceBuilder(finalHigh.end())
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
+                .splineToSplineHeading(new Pose2d(60,-14,Math.toRadians(90)),Math.toRadians(0))
                 .build();
 
         while(!isStopRequested() && !opModeIsActive()) {
@@ -164,26 +199,44 @@ public class BlueCycleAuto extends LinearOpMode {
 
         waitForStart();
 
+        dashTelemetry.put("01 - IMU Angle X = ", robot.imu.getAngles()[0]);
+        dashTelemetry.put("02 - IMU Angle Y = ", robot.imu.getAngles()[1]);
+        dashTelemetry.put("03 - IMU Angle Z = ", robot.imu.getAngles()[2]);
+        dashTelemetry.put("04 - Lift Front Encoder Value = ", robot.motorLiftFront.getCurrentPosition());
+        dashTelemetry.put("05 - Lift Rear Encoder Value = ", robot.motorLiftRear.getCurrentPosition());
+        dashTelemetry.put("06 - Claw Value = ", robot.servoGrabber.getPosition());
+        dashTelemetry.put("07 - GP1.Button.A = ", "RESET LIFT");
+        dashTelemetry.put("08 - GP1.Button.B = ", "LIFT LOW JUNCTION");
+        dashTelemetry.put("09 - GP1.Button.X = ", "LIFT MID JUNCTION");
+        dashTelemetry.put("10 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
+        dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
+        dashboard.sendTelemetryPacket(dashTelemetry);
+
+
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 
         //score preload
-        drive.followTrajectorySequence(park);
-        for(int i=0;i<3;i++) {
+        drive.followTrajectorySequence(untilCycle);
+        for(int i=0;i<params.numMidCycles;i++){
             drive.followTrajectorySequence(cycleMid);
         }
 
         /*
-        if(parkPosition==1){
-            drive.followTrajectorySequence(park1);
-        }else if(parkPosition==3){
-            drive.followTrajectorySequence(park3);
+        for(int i=0;i<params.numHighCycles;i++){
+            drive.followTrajectorySequence(cycleHigh);
         }
         */
 
-        telemetry.addData("heading:",robot.imu.getHeading());
-        telemetry.update();
+        drive.followTrajectorySequence(finalMid);
 
+        if(parkPosition==1){
+            drive.followTrajectorySequence(park1);
+        }else if(parkPosition==2){
+            drive.followTrajectorySequence(park2);
+        }else{
+            drive.followTrajectorySequence(park3);
+        }
     }
     private void initVuforia() {
         /*

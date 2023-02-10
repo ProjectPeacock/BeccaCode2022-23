@@ -222,7 +222,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
             drive.followTrajectorySequence(park2);
         }else{
             drive.followTrajectorySequence(park3);
-        };
+        }
 
     }
     private void initVuforia() {
