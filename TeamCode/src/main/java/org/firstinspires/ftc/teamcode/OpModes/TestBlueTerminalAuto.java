@@ -38,8 +38,8 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
      */
 
-    public static double preloadX = 27.5;
-    public static double preloadY = -30;
+    public static double preloadX = 28.5;
+    public static double preloadY = -31;
     //lift control init
     public final static HWProfile robot = new HWProfile();
     private LinearOpMode myOpmode=this;
@@ -48,7 +48,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
     AutoParams params = new AutoParams();
 
     //TFOD init
-    private static final String TFOD_MODEL_ASSET = "GenericSignalSleeve-Take1.tflite";
+    private static final String TFOD_MODEL_ASSET = robot.tfliteFileName;
     private static final String[] LABELS = {
             "circle",
             "triangle",
@@ -100,7 +100,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
                 .back(3)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{liftControl.moveLiftGrab();})
                 .turn(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(60.5,-10,Math.toRadians(0)),Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(61,-10,Math.toRadians(0)),Math.toRadians(0))
 
                 .UNSTABLE_addTemporalMarkerOffset(0, liftControl::closeClaw)
                 .waitSeconds(0.35)
@@ -114,7 +114,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, liftControl::openClaw)
                 .back(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.25, liftControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(60.5,-10,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(61,-10,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0,liftControl::closeClaw)
                 .waitSeconds(0.5)
                 .build();
@@ -152,17 +152,17 @@ public class TestBlueTerminalAuto extends LinearOpMode {
 
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalHigh.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
-                .splineToSplineHeading(new Pose2d(12,-12,Math.toRadians(90)),Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(12,-14,Math.toRadians(90)),Math.toRadians(180))
                 .build();
 
         TrajectorySequence park2 = drive.trajectorySequenceBuilder(finalHigh.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
-                .splineToSplineHeading(new Pose2d(36,-12,Math.toRadians(90)),Math.toRadians(130))
+                .splineToSplineHeading(new Pose2d(36,-14,Math.toRadians(90)),Math.toRadians(130))
                 .build();
 
         TrajectorySequence park3 = drive.trajectorySequenceBuilder(finalHigh.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{liftControl.moveLiftScore(0);})
-                .splineToSplineHeading(new Pose2d(60,-12,Math.toRadians(90)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(60,-14,Math.toRadians(90)),Math.toRadians(0))
                 .build();
 
         while(!isStarted() && !isStopRequested()) {
@@ -249,6 +249,7 @@ public class TestBlueTerminalAuto extends LinearOpMode {
         tfodParameters.minResultConfidence = 0.6f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
+
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
 
         // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
