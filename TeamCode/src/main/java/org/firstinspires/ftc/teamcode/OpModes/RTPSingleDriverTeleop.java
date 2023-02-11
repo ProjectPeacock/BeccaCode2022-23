@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "default", group = "Development")
+@TeleOp(name = "RTP Single Driver Teleop", group = "Competition")
 //@Disabled
 public class RTPSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
