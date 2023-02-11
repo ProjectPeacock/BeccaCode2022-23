@@ -89,8 +89,8 @@ public class BlueCycleAuto extends LinearOpMode {
 
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
-                .waitSeconds(0.5)
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
+                .waitSeconds(0.125)
+                .UNSTABLE_addTemporalMarkerOffset(.75,()->{clawControl.moveLiftScore(2);})
                 .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
 
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
@@ -105,8 +105,10 @@ public class BlueCycleAuto extends LinearOpMode {
                 .build();
 
         TrajectorySequence cycleMid = drive.trajectorySequenceBuilder(untilCycle.end())
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(2);})
+                .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(1);})
+                //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(0);})
                 .back(6)
+                .UNSTABLE_addTemporalMarkerOffset(0.75,()->{clawControl.moveLiftScore(2);})
                 .splineToSplineHeading(new Pose2d(31.5,-18.5,Math.toRadians(220)),Math.toRadians(190))
                 .waitSeconds(0.25)
                 .UNSTABLE_addTemporalMarkerOffset(-0.25, clawControl::openClaw)
@@ -117,6 +119,7 @@ public class BlueCycleAuto extends LinearOpMode {
                 .waitSeconds(0.5)
                 .build();
 
+        /*
         TrajectorySequence cycleHigh = drive.trajectorySequenceBuilder(cycleMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(3);})
                 .back(6)
@@ -130,6 +133,8 @@ public class BlueCycleAuto extends LinearOpMode {
                 .waitSeconds(0.5)
                 .build();
 
+         */
+
         TrajectorySequence finalMid = drive.trajectorySequenceBuilder(cycleMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(2);})
                 .back(6)
@@ -138,6 +143,8 @@ public class BlueCycleAuto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.25,()->{clawControl.openClaw();})
                 .back(1)
                 .build();
+
+        /*
 
         TrajectorySequence finalHigh = drive.trajectorySequenceBuilder(cycleHigh.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(3);})
@@ -148,17 +155,19 @@ public class BlueCycleAuto extends LinearOpMode {
                 .back(1)
                 .build();
 
-        TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalHigh.end())
+         */
+
+        TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(12,-14,Math.toRadians(90)),Math.toRadians(180))
                 .build();
 
-        TrajectorySequence park2 = drive.trajectorySequenceBuilder(finalHigh.end())
+        TrajectorySequence park2 = drive.trajectorySequenceBuilder(finalMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(36,-14,Math.toRadians(90)),Math.toRadians(130))
                 .build();
 
-        TrajectorySequence park3 = drive.trajectorySequenceBuilder(finalHigh.end())
+        TrajectorySequence park3 = drive.trajectorySequenceBuilder(finalMid.end())
                 .UNSTABLE_addTemporalMarkerOffset(0,()->{clawControl.moveLiftScore(0);})
                 .splineToSplineHeading(new Pose2d(60,-14,Math.toRadians(90)),Math.toRadians(0))
                 .build();
