@@ -88,7 +88,5 @@ public class LiftControlClass {
     public void closeClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
     }
-    public void raiseOdometer(){robot.odometryServo.setPosition(robot.ODO_UP);}
-    public void lowerOdometer(){robot.odometryServo.setPosition(robot.ODO_UP);}
-    public void disableClaw(){robot.servoGrabber.disable();}
+    public void disableClaw(){robot.servoGrabber.setPwmDisable();}
 }   // close the AutoClass class

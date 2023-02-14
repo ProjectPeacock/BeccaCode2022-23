@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "RTP Dual Driver Teleop Mode", group = "Competition")
+@TeleOp(name = "Adjustable Single Driver Mode", group = "Competition")
 //@Disabled
-public class RTPDualDriverTeleop extends LinearOpMode {
+public class AdjustableSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
     @Override
@@ -25,21 +25,19 @@ public class RTPDualDriverTeleop extends LinearOpMode {
         LiftControlClass lift = new LiftControlClass(robot,myOpmode);
 
         GamepadEx gp1 = new GamepadEx(gamepad1);
-        GamepadEx gp2 = new GamepadEx(gamepad2);
-        ButtonReader aReader = new ButtonReader(gp2, GamepadKeys.Button.LEFT_BUMPER);
-        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.RIGHT_BUMPER);
-
-        ButtonReader aReader2 = new ButtonReader(gp1, GamepadKeys.Button.LEFT_BUMPER);
+        ButtonReader aReader = new ButtonReader(gp1, GamepadKeys.Button.A);
+        ButtonReader bReader = new ButtonReader(gp1, GamepadKeys.Button.DPAD_RIGHT);
 
         telemetry.addData("Ready to Run: ", "GOOD LUCK");
         telemetry.update();
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
-        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false;
+        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
-        int liftPos=0;
+
+        int liftPos=0, bumpCount=0, offset=0;
 
 
         waitForStart();
@@ -94,12 +92,12 @@ public class RTPDualDriverTeleop extends LinearOpMode {
 
 
             //claw control
-            if((aReader.isDown()&&clawReady)||(aReader2.isDown()&&clawReady)){
+            if(aReader.isDown()&&clawReady){
                 clawToggle=!clawToggle;
             }
 
             //forces claw to only open or close if button is pressed once, not held
-            if(!aReader.isDown()&&!aReader2.isDown()){
+            if(!aReader.isDown()){
                 clawReady=true;
             }else{
                 clawReady=false;
@@ -112,26 +110,54 @@ public class RTPDualDriverTeleop extends LinearOpMode {
                 lift.closeClaw();
             }
 
+            //lift toggles
+            if(!gp1.isDown(GamepadKeys.Button.RIGHT_BUMPER)){
+                toggleReadyUp=true;
+            }
+            if(!gp1.isDown(GamepadKeys.Button.LEFT_BUMPER)){
+                toggleReadyDown=true;
+            }
 
-            if (gp2.getButton(GamepadKeys.Button.B)){
-                liftPos= robot.LIFT_LOW;
-            }else if(gp2.getButton(GamepadKeys.Button.Y)){
-                liftPos= robot.LIFT_HIGH;
-            }else if(gp2.getButton(GamepadKeys.Button.X)){
-                liftPos= robot.LIFT_MID;
-            }else if(gp2.getButton(GamepadKeys.Button.A)){
+            if(gp1.isDown(GamepadKeys.Button.B)){
+                bumpCount=0;
+                offset=0;
                 liftPos= robot.LIFT_BOTTOM;
             }
 
-            if(gp2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.15){
-                liftPos+= robot.liftAdjust;
-            }else if(gp2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
-                liftPos-= robot.liftAdjust;
+            if (gp1.getButton(GamepadKeys.Button.RIGHT_BUMPER)&&toggleReadyUp){
+                toggleReadyUp=false;
+                offset=0;
+                if(bumpCount<3){
+                    bumpCount++;
+                }
+            }else if(gp1.getButton(GamepadKeys.Button.LEFT_BUMPER)&&toggleReadyDown){
+                toggleReadyDown=false;
+                offset=0;
+                if(bumpCount>0){
+                    bumpCount--;
+                }
+            }
+
+            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
+                offset+= robot.liftAdjust;
+            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
+                offset-= robot.liftAdjust;
+            }
+
+            if(bumpCount==0){
+                liftPos= robot.LIFT_BOTTOM+offset;
+            }else if(bumpCount==1){
+                liftPos=robot.LIFT_LOW+offset;
+            }else if(bumpCount==2){
+                liftPos= robot.LIFT_MID+offset;
+            }else if(bumpCount==3){
+                liftPos= robot.LIFT_HIGH+offset;
             }
 
             if(liftPos<0){
                 liftPos=0;
             }
+
             lift.runTo(liftPos);
 
             // Provide user feedback

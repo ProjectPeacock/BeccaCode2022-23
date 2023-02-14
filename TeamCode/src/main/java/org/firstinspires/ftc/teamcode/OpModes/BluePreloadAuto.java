@@ -98,6 +98,7 @@ public class BluePreloadAuto extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
+                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::disableClaw)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)

@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -57,8 +58,7 @@ public class HWProfile {
     public DcMotorEx motorLiftFront = null;
     public DcMotorEx motorLiftRear = null;
     public RevIMU imu = null;
-    public ServoEx servoGrabber = null;
-    public ServoEx odometryServo = null;
+    public ServoImplEx servoGrabber = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
 
@@ -118,8 +118,7 @@ public class HWProfile {
         autoLight.set(0);
 
         //init servos
-        servoGrabber = new SimpleServo(ahwMap,"servoGrabber",0.3,0.55, AngleUnit.RADIANS);
-        odometryServo = new SimpleServo(ahwMap,"odometryServo",0,1,AngleUnit.RADIANS);
+        servoGrabber = hwMap.get(ServoImplEx.class, "servoGrabber");
         //init imu
         imu = new RevIMU(ahwMap);
         imu.init();
