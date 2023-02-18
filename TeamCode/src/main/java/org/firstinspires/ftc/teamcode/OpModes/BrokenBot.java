@@ -78,6 +78,12 @@ public class BrokenBot extends LinearOpMode {
         while (opModeIsActive()) {
 
 
+            telemetry.addData("Servo Align = ", robot.servoAlign.getPosition());
+            if (gamepad2.left_bumper) {
+                robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
+            } else if (gamepad2.right_bumper){
+                robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
+            }
 
             if (gamepad2.right_trigger>0.1) {
                 robot.autoLight.set(-1);

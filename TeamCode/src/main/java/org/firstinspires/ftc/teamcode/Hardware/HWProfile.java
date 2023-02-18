@@ -29,6 +29,10 @@ public class HWProfile {
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.65;
 
+    // servo align positions
+    public final double SERVO_ALIGN_UP = 0.7;
+    public final double SERVO_ALIGN_DOWN = 0.1;
+
     //odometer positions
     public final double ODO_UP=0.25;
     public final double ODO_DOWN=0.95;
@@ -59,6 +63,7 @@ public class HWProfile {
     public DcMotorEx motorLiftRear = null;
     public RevIMU imu = null;
     public ServoImplEx servoGrabber = null;
+    public ServoImplEx servoAlign = null;
     public MecanumDrive mecanum = null;
     public MotorEx autoLight = null;
 
@@ -119,6 +124,8 @@ public class HWProfile {
 
         //init servos
         servoGrabber = hwMap.get(ServoImplEx.class, "servoGrabber");
+        servoAlign = hwMap.get(ServoImplEx.class, "servoAlign");
+
         //init imu
         imu = new RevIMU(ahwMap);
         imu.init();
