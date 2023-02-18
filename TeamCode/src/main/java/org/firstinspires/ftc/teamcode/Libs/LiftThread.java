@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Libs;
 
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 
@@ -17,7 +18,7 @@ public class LiftThread implements Runnable{
     public int cyclesRun = 0;
     public DcMotorEx motorFrontLift = null;
     public DcMotorEx motorRearLift = null;
-    public ServoEx claw = null;
+    public ServoImplEx claw = null;
     public HWProfile robot = new HWProfile();
     public AutoParams threadParams = new AutoParams();
 

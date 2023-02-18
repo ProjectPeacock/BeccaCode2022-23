@@ -42,7 +42,6 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
 
 
         waitForStart();
-        lift.raiseOdometer();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
 
         for (LynxModule hub : allHubs) {

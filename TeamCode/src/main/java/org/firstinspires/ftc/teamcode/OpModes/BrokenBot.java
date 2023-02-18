@@ -72,7 +72,6 @@ public class BrokenBot extends LinearOpMode {
         dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
         dashTelemetry.put("12 - Lift Power = ", liftPower);
         dashboard.sendTelemetryPacket(dashTelemetry);
-        robot.odometryServo.setPosition(robot.ODO_DOWN);
 
         waitForStart();
 
@@ -120,13 +119,6 @@ public class BrokenBot extends LinearOpMode {
                 liftPower = l7_LIFT_POWER;
             }
 
-            if(gp1.isDown(GamepadKeys.Button.B)){
-                robot.odometryServo.setPosition(robot.ODO_UP);
-            }
-
-            if(gp1.isDown(GamepadKeys.Button.X)){
-                robot.servoGrabber.disable();
-            }
 
             if(gp1.isDown(GamepadKeys.Button.Y)){
                 liftPosition =l3_LIFT_JUNCTION_HIGH;
