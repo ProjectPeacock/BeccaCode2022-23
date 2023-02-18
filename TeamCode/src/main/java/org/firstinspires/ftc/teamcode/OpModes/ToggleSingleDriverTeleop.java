@@ -42,6 +42,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
 
 
         waitForStart();
+        robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
 
         for (LynxModule hub : allHubs) {
@@ -106,6 +107,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
 
             //apply value to claw
             if (clawToggle) {
+                //robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
                 lift.openClaw();
             } else {
                 lift.closeClaw();
@@ -156,6 +158,12 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             }
 
             lift.runTo(liftPos);
+
+            if(robot.motorLiftFront.getCurrentPosition()> robot.ALIGNER_UP_THRESHOLD&&!clawToggle){
+                robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
+            }else if(robot.motorLiftFront.getCurrentPosition()<robot.ALIGNER_DOWN_THRESHOLD){
+                robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
+            }
 
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());

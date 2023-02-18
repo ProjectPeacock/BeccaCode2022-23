@@ -19,6 +19,13 @@ public class HWProfile {
     //constants
     public final boolean fieldCentric=true;
 
+    //aligner constants
+    public final int ALIGNER_UP_THRESHOLD=525;
+    public final int ALIGNER_DOWN_THRESHOLD=800;
+    // servo align positions
+    public final double SERVO_ALIGN_UP = 0.7;
+    public final double SERVO_ALIGN_DOWN = 0.1;
+
     //tflite file name
     public final String tfliteFileName = "PP_Generic_SS.tflite";
 
@@ -29,9 +36,6 @@ public class HWProfile {
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.65;
 
-    // servo align positions
-    public final double SERVO_ALIGN_UP = 0.7;
-    public final double SERVO_ALIGN_DOWN = 0.1;
 
     //odometer positions
     public final double ODO_UP=0.25;
@@ -46,7 +50,7 @@ public class HWProfile {
     public final int ANTI_TIP_AXIS=1;
 
     //lift constants
-    final public int liftAdjust=15;
+    final public int liftAdjust=35;
     final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1500;
     final public int LIFT_BOTTOM=0;

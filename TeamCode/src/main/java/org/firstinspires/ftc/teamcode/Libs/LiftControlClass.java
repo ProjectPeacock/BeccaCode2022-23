@@ -45,12 +45,16 @@ public class LiftControlClass {
     public void moveLiftScore(int pos){
         if(pos==0){
             runTo(robot.LIFT_BOTTOM);
+            robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
         }else if(pos==1){
             runTo(robot.LIFT_LOW);
+            robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
         }else if(pos==2){
             runTo(robot.LIFT_MID);
+            robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
         }else if(pos==3){
             runTo(robot.LIFT_HIGH);
+            robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
         }
     }
 
@@ -84,6 +88,7 @@ public class LiftControlClass {
     //claw control methods
     public void openClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_OPEN);
+        robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
     }
     public void closeClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
