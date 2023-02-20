@@ -8,13 +8,17 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "Toggle Single Driver Mode", group = "Competition")
+@TeleOp(name = "Super Secret Teleop, DO NOT RUN!", group = "Competition")
 //@Disabled
 public class ToggleSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
@@ -33,12 +37,13 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
         telemetry.update();
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        ElapsedTime runTime = new ElapsedTime();
 
         boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
 
-        int liftPos=0, bumpCount=0;
+        int liftPos=0, bumpCount=0,offset=0;
 
 
         waitForStart();
@@ -50,7 +55,15 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
         }
 
 
+        runTime.reset();
+
         while (opModeIsActive()) {
+            //rumble if cone detected in claw AND if claw is open
+            if(robot.sensorColor.getDistance(DistanceUnit.CM)<3&&clawToggle){
+                gamepad1.rumble(1,0.25,50);
+            }
+
+            //drive power input from analog sticks
             forwardPower=gp1.getLeftY();
             strafePower=gp1.getLeftX();
 
@@ -65,6 +78,8 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
                     forwardPower*=robot.ANTI_TIP_ADJ;
                 }
             }
+
+            //toggle for slow mode
             if(bReader.isDown()&&slowReady){
                 slowToggle=!slowToggle;
             }
@@ -74,6 +89,8 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             }else{
                 slowReady=false;
             }
+
+            //apply slow mode
             if (slowToggle) {
                 forwardPower*=0.5;
                 strafePower*=0.5;
@@ -121,48 +138,73 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
                 toggleReadyDown=true;
             }
 
+            //lift reset
             if(gp1.isDown(GamepadKeys.Button.B)){
                 bumpCount=0;
+                offset=0;
                 liftPos= robot.LIFT_BOTTOM;
             }
 
+            //increase lift position
             if (gp1.getButton(GamepadKeys.Button.RIGHT_BUMPER)&&toggleReadyUp){
+                offset=0;
                 toggleReadyUp=false;
                 if(bumpCount<3){
                     bumpCount++;
                 }
+
+            //increase lift position
             }else if(gp1.getButton(GamepadKeys.Button.LEFT_BUMPER)&&toggleReadyDown){
+                offset=0;
                 toggleReadyDown=false;
                 if(bumpCount>0){
                     bumpCount--;
                 }
             }
 
-            if(bumpCount==0){
-                liftPos= robot.LIFT_BOTTOM;
-            }else if(bumpCount==1){
-                liftPos=robot.LIFT_LOW;
-            }else if(bumpCount==2){
-                liftPos= robot.LIFT_MID;
-            }else if(bumpCount==3){
-                liftPos= robot.LIFT_HIGH;
+            //apply lift positions
+            if (bumpCount == 0) {
+                liftPos = robot.LIFT_BOTTOM+offset;
+            } else if (bumpCount == 1) {
+                liftPos = robot.LIFT_LOW+offset;
+            } else if (bumpCount == 2) {
+                liftPos = robot.LIFT_MID+offset;
+            } else if (bumpCount == 3) {
+                liftPos = robot.LIFT_HIGH+offset;
             }
 
-            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1){
-                liftPos+= robot.liftAdjust;
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1){
-                liftPos-= robot.liftAdjust;
+            //adjust lift position
+            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.5){
+                offset+= robot.liftAdjust;
+            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5){
+                offset-= robot.liftAdjust;
             }
-            if(liftPos<0){
-                liftPos=0;
-            }
+
+            liftPos=Range.clip(liftPos,2,robot.MAX_LIFT_VALUE);
+
 
             lift.runTo(liftPos);
 
             if(robot.motorLiftFront.getCurrentPosition()> robot.ALIGNER_UP_THRESHOLD&&!clawToggle){
                 robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
-            }else if(robot.motorLiftFront.getCurrentPosition()<robot.ALIGNER_DOWN_THRESHOLD){
-                robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
+            }
+
+            if(runTime.time() > 90&&runTime.time()<90.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            }
+
+            if(runTime.time() > 91&&runTime.time()<91.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            }
+
+            if(runTime.time() > 92&&runTime.time()<92.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            }
+            if(runTime.time() > 93) {
+                gamepad1.setLedColor(255, 0, 0, 30000);
             }
 
             // Provide user feedback

@@ -230,6 +230,7 @@ public class BlueCycleLowAuto extends LinearOpMode {
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 
+        robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
         //score preload
         drive.followTrajectorySequence(untilCycle);
         for(int i=0;i<2;i++){

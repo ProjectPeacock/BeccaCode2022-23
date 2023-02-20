@@ -7,9 +7,11 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,8 +22,7 @@ public class HWProfile {
     public final boolean fieldCentric=true;
 
     //aligner constants
-    public final int ALIGNER_UP_THRESHOLD=525;
-    public final int ALIGNER_DOWN_THRESHOLD=800;
+    public final int ALIGNER_UP_THRESHOLD=600;
     // servo align positions
     public final double SERVO_ALIGN_UP = 0.7;
     public final double SERVO_ALIGN_DOWN = 0.1;
@@ -50,13 +51,22 @@ public class HWProfile {
     public final int ANTI_TIP_AXIS=1;
 
     //lift constants
-    final public int liftAdjust=35;
+    final public int liftAdjust=15;
     final public double LIFT_POW=1;
-    final public int MAX_LIFT_VALUE = 1500;
+    final public int MAX_LIFT_VALUE = 1200;
     final public int LIFT_BOTTOM=0;
     final public int LIFT_LOW=525;
     final public int LIFT_MID=815;
     final public int LIFT_HIGH=1150;
+
+    final private int liftTicksPerInch=38;
+    final public int stack1=(int)5.25*liftTicksPerInch;
+    final public int stack2=(int)3.75*liftTicksPerInch;
+    final public int stack3=(int)3*liftTicksPerInch;
+    final public int stack4=(int)0.75*liftTicksPerInch;
+
+    public RevColorSensorV3 sensorColor;
+    //public OpticalDistanceSensor sensorDistance;
 
     /* Public OpMode members. */
     public MotorEx motorLF = null;
@@ -121,6 +131,8 @@ public class HWProfile {
         motorLiftRear.setTargetPositionTolerance(rearLiftMotorTol);
         motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        // rev color sensor
+        sensorColor = hwMap.get(RevColorSensorV3.class, "servoColor");
 
         //light init
         autoLight = new MotorEx(ahwMap, "sideSideOdo", 8192,10000);

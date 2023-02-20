@@ -93,5 +93,6 @@ public class LiftControlClass {
     public void closeClaw(){
         robot.servoGrabber.setPosition(robot.CLAW_CLOSE);
     }
+    public void lowerAligner(){robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);}
     public void disableClaw(){robot.servoGrabber.setPwmDisable();}
 }   // close the AutoClass class
