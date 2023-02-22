@@ -39,7 +39,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         ElapsedTime runTime = new ElapsedTime();
 
-        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false;
+        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false, alignAdjustReady=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
 
@@ -60,7 +60,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             //rumble if cone detected in claw AND if claw is open
             if(robot.sensorColor.getDistance(DistanceUnit.CM)<3&&clawToggle){
-                gamepad1.rumble(1,0.25,50);
+                gamepad1.rumble(1,1,50);
             }
 
             //drive power input from analog sticks
@@ -79,6 +79,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
                 }
             }
 
+            /*
             //toggle for slow mode
             if(bReader.isDown()&&slowReady){
                 slowToggle=!slowToggle;
@@ -89,6 +90,8 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             }else{
                 slowReady=false;
             }
+
+             */
 
             //apply slow mode
             if (slowToggle) {
@@ -160,6 +163,14 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
                 if(bumpCount>0){
                     bumpCount--;
                 }
+            }
+
+            if(!gp1.isDown(GamepadKeys.Button.X)){
+                alignAdjustReady=true;
+            }
+
+            if(gp1.isDown(GamepadKeys.Button.X)&&alignAdjustReady){
+                offset-=50;
             }
 
             //apply lift positions

@@ -92,7 +92,7 @@ public class NewBlueCycleLowAuto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .waitSeconds(0.125)
                 .UNSTABLE_addTemporalMarkerOffset(0.65,()->{clawControl.lowerAligner();})
-                .UNSTABLE_addTemporalMarkerOffset(0.65,()->{clawControl.moveLiftScore(1);})
+                .UNSTABLE_addTemporalMarkerOffset(0.65,()->{clawControl.moveLiftScore(2);})
                 .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
 
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
