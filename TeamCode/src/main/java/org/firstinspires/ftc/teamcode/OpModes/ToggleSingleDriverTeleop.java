@@ -41,7 +41,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
 
         boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false, alignAdjustReady=false;
         boolean antiTip=true;
-        double forwardPower=0, strafePower=0, liftPower=.5;
+        double forwardPower=0, strafePower=0, turnPower=0;
 
         int liftPos=0, bumpCount=0,offset=0;
 
@@ -66,6 +66,11 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             //drive power input from analog sticks
             forwardPower=gp1.getLeftY();
             strafePower=gp1.getLeftX();
+            if(gp1.getRightX()<0.75){
+                turnPower=Math.pow(gp1.getRightX(),2)*0.75*robot.TURN_MULTIPLIER;
+            }else{
+                turnPower=gp1.getRightX()*robot.TURN_MULTIPLIER;
+            }
 
             //anti-tip "algorithm"
             if(antiTip){
@@ -109,7 +114,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
                 robot.mecanum.driveFieldCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER,robot.imu.getRotation2d().getDegrees()+180, true);
             }else{
                 //robot centric setup
-                robot.mecanum.driveRobotCentric(strafePower,forwardPower,-gp1.getRightX()*robot.TURN_MULTIPLIER, true);
+                robot.mecanum.driveRobotCentric(strafePower,forwardPower,-turnPower, true);
             }
 
 
@@ -129,8 +134,10 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             if (clawToggle) {
                 //robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
                 lift.openClaw();
-            } else {
+            } else if(!clawToggle){
                 lift.closeClaw();
+            }else if(gp1.isDown(GamepadKeys.Button.Y)){
+                robot.servoGrabber.setPosition(robot.CLAW_BEACON);
             }
 
             //lift toggles
@@ -170,7 +177,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             }
 
             if(gp1.isDown(GamepadKeys.Button.X)&&alignAdjustReady){
-                offset-=50;
+                offset-=75;
             }
 
             //apply lift positions
@@ -221,7 +228,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
             // Provide user feedback
             //telemetry.addData("lift position = ", robot.liftEncoder.getPosition());
             telemetry.addData("Lift Position = ", liftPos);
-            telemetry.addData("Lift power = ",liftPower);
+            telemetry.addData("Lift power = ",robot.motorLiftFront.getPower());
             telemetry.addData("Claw open = ", clawToggle);
             telemetry.addData("Current tip = ",tip);
             telemetry.addData("IMU Angles X = ", robot.imu.getAngles()[0]);

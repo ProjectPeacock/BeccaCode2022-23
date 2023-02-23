@@ -36,6 +36,7 @@ public class HWProfile {
     //claw positions
     public final double CLAW_OPEN =0.3;
     public final double CLAW_CLOSE =0.65;
+    public final double CLAW_BEACON=0.4;
 
 
     //odometer positions
