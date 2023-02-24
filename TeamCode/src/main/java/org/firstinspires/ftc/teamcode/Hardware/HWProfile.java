@@ -26,6 +26,7 @@ public class HWProfile {
     // servo align positions
     public final double SERVO_ALIGN_UP = 0.7;
     public final double SERVO_ALIGN_DOWN = 0.1;
+    public final double SERVO_ALIGN_AUTO_END = 0.85;
 
     //tflite file name
     public final String tfliteFileName = "PP_Generic_SS.tflite";
