@@ -39,7 +39,7 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         ElapsedTime runTime = new ElapsedTime();
 
-        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false, alignAdjustReady=false;
+        boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false, toggleReadyUp=false, toggleReadyDown=false, alignAdjustReady=false, alignerToggle=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, turnPower=0;
 
@@ -203,8 +203,12 @@ public class ToggleSingleDriverTeleop extends LinearOpMode {
 
             lift.runTo(liftPos);
 
-            if(robot.motorLiftFront.getCurrentPosition()> robot.ALIGNER_UP_THRESHOLD&&!clawToggle){
-                robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
+            if(!gp1.isDown(GamepadKeys.Button.Y)) {
+                if (robot.motorLiftFront.getCurrentPosition() > robot.ALIGNER_UP_THRESHOLD && !clawToggle) {
+                    robot.servoAlign.setPosition(robot.SERVO_ALIGN_DOWN);
+                }
+            }else{
+                robot.servoAlign.setPosition(robot.SERVO_ALIGN_UP);
             }
 
             if(runTime.time() > 90&&runTime.time()<90.25){
