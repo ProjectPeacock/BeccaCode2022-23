@@ -208,16 +208,19 @@ public class BlueCycleAuto extends LinearOpMode {
                         double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
                         double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
 
-                        telemetry.addData(""," ");
-                        telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
-                        telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
-                        telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                        if(row < 275) {
+                            telemetry.addData(""," ");
+                            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
+                            telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
+                            telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                            if(recognition.getLabel() == "circle"){
+                                parkPosition = 1;
+                            } else if(recognition.getLabel() == "star" ){
+                                parkPosition = 3;
+                            } else parkPosition = 2;
 
-                        if(recognition.getLabel() == "circle"){
-                            parkPosition = 1;
-                        } else if(recognition.getLabel() == "star" ){
-                            parkPosition = 3;
-                        } else parkPosition = 2;
+                        }
+
                     }
                     telemetry.update();
                 }
@@ -285,7 +288,7 @@ public class BlueCycleAuto extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.78f;
+        tfodParameters.minResultConfidence = 0.7f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
