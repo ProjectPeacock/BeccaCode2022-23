@@ -242,8 +242,8 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
                                 break;
                         }
                         telemetry.addLine("Tag of interest is in sight!\n\n:");
-                        telemetry.addLine(String.format("\ntag ID=%d", tagOfInterest.id));
-                        telemetry.addLine(String.format("\npark position=%d", parkPosition));
+                        telemetry.addData("tag ID=", tagOfInterest.id);
+                        telemetry.addData("park position= ", parkPosition);
                     } else {
                         telemetry.addLine("Don't see tag of interest :(");
                     }

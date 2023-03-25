@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -57,9 +58,9 @@ public class HWProfile {
     final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1200;
     final public int LIFT_BOTTOM=0;
-    final public int LIFT_LOW=525;
-    final public int LIFT_MID=815;
-    final public int LIFT_HIGH=1150;
+    final public int LIFT_LOW=575;
+    final public int LIFT_MID=875;
+    final public int LIFT_HIGH=1220;
 
     final private int liftTicksPerInch=38;
     final public int stack1=(int)5.25*liftTicksPerInch;
@@ -98,22 +99,22 @@ public class HWProfile {
 
         //drive motor init
         motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
-        motorLF.setRunMode(Motor.RunMode.RawPower);
+        motorLF.setRunMode(Motor.RunMode.VelocityControl);
         motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLF.resetEncoder();
 
         motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
-        motorLR.setRunMode(Motor.RunMode.RawPower);
+        motorLR.setRunMode(Motor.RunMode.VelocityControl);
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.resetEncoder();
 
         motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
-        motorRF.setRunMode(Motor.RunMode.RawPower);
+        motorRF.setRunMode(Motor.RunMode.VelocityControl);
         motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRF.resetEncoder();
 
         motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
-        motorRR.setRunMode(Motor.RunMode.RawPower);
+        motorRR.setRunMode(Motor.RunMode.VelocityControl);
         motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorRR.resetEncoder();
 
@@ -126,12 +127,14 @@ public class HWProfile {
         motorLiftFront.setTargetPosition(0);
         motorLiftFront.setTargetPositionTolerance(10);
         motorLiftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLiftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorLiftRear = hwMap.get(DcMotorEx.class, "motorLiftRear");
         motorLiftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLiftRear.setTargetPosition(0);
         motorLiftRear.setTargetPositionTolerance(rearLiftMotorTol);
         motorLiftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLiftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // rev color sensor
         sensorColor = hwMap.get(RevColorSensorV3.class, "servoColor");
