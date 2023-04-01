@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -121,7 +122,7 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftGrab();})
                 .turn(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(63,-8,Math.toRadians(0)),Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(59.75,-7,Math.toRadians(0)),Math.toRadians(0))
 
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .waitSeconds(0.35)
@@ -140,7 +141,8 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
                 .waitSeconds(0.5)
                 .back(4)
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(62.5,-8,Math.toRadians(0)),Math.toRadians(0))
+
+                .splineToSplineHeading(new Pose2d(59.5,-7,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0.35,clawControl::closeClaw)
                 .waitSeconds(0.35)
                 .back(1)
@@ -160,7 +162,7 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
                 .waitSeconds(0.5)
                 .back(4)
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(62,-6.5,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(59.0,-6.5,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0.35,clawControl::closeClaw)
                 .waitSeconds(0.35)
                 .back(1)
@@ -278,7 +280,13 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
 
         //score preload
         drive.followTrajectorySequence(untilCycle);
+
         drive.followTrajectorySequence(cycleMid1);
+        drive.followTrajectorySequence(cycleMid2);
+
+      // if (getRuntime()<26){
+            drive.followTrajectorySequence(finalMid);
+       // }
         //drive.followTrajectorySequence(cycleMid2);
         //drive.followTrajectorySequence(cycleMid3);
 
@@ -288,7 +296,6 @@ public class BlueCycleAutoAprTags extends LinearOpMode {
         }
         */
 
-        drive.followTrajectorySequence(finalMid);
 
         if(parkPosition==1){
             drive.followTrajectorySequence(park1);
