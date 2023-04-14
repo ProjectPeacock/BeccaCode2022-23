@@ -58,9 +58,9 @@ public class HWProfile {
     final public double LIFT_POW=1;
     final public int MAX_LIFT_VALUE = 1200;
     final public int LIFT_BOTTOM=0;
-    final public int LIFT_LOW=575;
-    final public int LIFT_MID=875;
-    final public int LIFT_HIGH=1220;
+    final public int LIFT_LOW=500;
+    final public int LIFT_MID=850;
+    final public int LIFT_HIGH=1190;
 
     final private int liftTicksPerInch=38;
     final public int stack1=(int)5.25*liftTicksPerInch;
