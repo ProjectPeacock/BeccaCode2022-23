@@ -21,8 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Red Cycle Auto April Tags", group = "Competition")
-public class RedCycleAutoAprTags extends LinearOpMode {
+@Autonomous(name = "ATags Red Alliance Blue Terminal", group = "Competition")
+public class ATags_Red_Alliance_Blue_Terminal extends LinearOpMode {
     FtcDashboard dashboard;
     TelemetryPacket dashTelemetry = new TelemetryPacket();
     public static double preloadX = 28.5;
@@ -107,7 +107,6 @@ public class RedCycleAutoAprTags extends LinearOpMode {
         Pose2d startPose= new Pose2d(params.startPoseX,params.startPoseY,Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
-
         TrajectorySequence untilCycle = drive.trajectorySequenceBuilder(startPose)
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .waitSeconds(0.06)
@@ -118,9 +117,10 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
                 .waitSeconds(0.35)
                 .back(6)
+
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftGrab();})
                 .turn(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(60.25,-7,Math.toRadians(0)),Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(62.0,-7,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
                 .waitSeconds(0.20)
                 .build();
@@ -131,16 +131,16 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .back(12)
                 .UNSTABLE_addTemporalMarkerOffset(0.65,()->{clawControl.lowerAligner();})
                 .UNSTABLE_addTemporalMarkerOffset(0.75,()->{clawControl.moveLiftScore(2);})
-                .splineToSplineHeading(new Pose2d(35.5,-15.5,Math.toRadians(215)),Math.toRadians(190))
-                .forward(6.5)
+                .splineToSplineHeading(new Pose2d(35.5,-15.5,Math.toRadians(225)),Math.toRadians(190))
+                .forward(5.5)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2,75);})
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::openClaw)
                 .waitSeconds(0.5)
                 .back(4)
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(60.5,-7,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(62.0,-7,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0.35,clawControl::closeClaw)
-                .waitSeconds(0.2)
+                .waitSeconds(0.35)
                 .back(1)
                 .build();
 
@@ -150,14 +150,14 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .back(12)
                 .UNSTABLE_addTemporalMarkerOffset(0.65,()->{clawControl.lowerAligner();})
                 .UNSTABLE_addTemporalMarkerOffset(0.75,()->{clawControl.moveLiftScore(2);})
-                .splineToSplineHeading(new Pose2d(35.5,-15.5,Math.toRadians(210)),Math.toRadians(190))
-                .forward(6.5)
+                .splineToSplineHeading(new Pose2d(35.5,-15.5,Math.toRadians(220)),Math.toRadians(190))
+                .forward(5.5)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2,75);})
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::openClaw)
                 .waitSeconds(0.5)
                 .back(4)
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::moveLiftGrab)
-                .splineToSplineHeading(new Pose2d(59.5,-6.5,Math.toRadians(0)),Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(61.0,-7.0,Math.toRadians(0)),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0.35,clawControl::closeClaw)
                 .waitSeconds(0.35)
                 .back(1)
@@ -169,8 +169,8 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .back(11)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.lowerAligner();})
                 .UNSTABLE_addTemporalMarkerOffset(0.75,()->{clawControl.moveLiftScore(2);})
-                .splineToSplineHeading(new Pose2d(35.5,-13.5,Math.toRadians(215)),Math.toRadians(190))
-                .forward(6.5)
+                .splineToSplineHeading(new Pose2d(35.5,-13.5,Math.toRadians(220)),Math.toRadians(190))
+                .forward(5.5)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2,75);})
                 .UNSTABLE_addTemporalMarkerOffset(0.5, clawControl::openClaw)
                 .waitSeconds(0.5)
@@ -179,7 +179,6 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(36,-13.5,Math.toRadians(90)),Math.toRadians(220))
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{robot.servoAlign.setPosition(robot.SERVO_ALIGN_AUTO_END);})
                 .build();
-
 
         /*
 
@@ -193,6 +192,7 @@ public class RedCycleAutoAprTags extends LinearOpMode {
                 .build();
 
          */
+
         TrajectorySequence park1 = drive.trajectorySequenceBuilder(finalMid.end())
                 .strafeLeft(22)
                 .back(1.5)
