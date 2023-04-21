@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import java.util.List;
 
 @TeleOp(name = "Single Driver Teleop Mode", group = "Competition")
-
+@Disabled
 public class SingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
@@ -55,7 +56,7 @@ public class SingleDriverTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             forwardPower=gp1.getLeftY();
-            strafePower=gp1.getLeftX();
+            strafePower=gp1.getLeftX()*0.75;
 
             //anti-tip "algorithm"
             if(antiTip){
@@ -78,8 +79,8 @@ public class SingleDriverTeleop extends LinearOpMode {
                 slowReady=false;
             }
             if (slowToggle) {
-                forwardPower*=0.5;
-                strafePower*=0.5;
+                forwardPower*=0.75;
+                strafePower*=0.75;
             } else {
                 forwardPower*=1;
                 strafePower*=1;
@@ -114,10 +115,10 @@ public class SingleDriverTeleop extends LinearOpMode {
 
             if (gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()>0) {
                 liftPower=-gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()<robot.LIFT_HIGH+100){
+            }else if (gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .1&&robot.motorLiftFront.getCurrentPosition()<robot.LIFT_HIGH){
                 liftPower=Math.pow(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),2);
             }else{
-                liftPower=0.01;
+                liftPower=0.0;
             }
 
             lift.setLiftPow(liftPower);
@@ -125,6 +126,8 @@ public class SingleDriverTeleop extends LinearOpMode {
             // Provide user feedback
             telemetry.addData("Lift position front = ",robot.motorLiftFront.getCurrentPosition());
             telemetry.addData("Lift position rear = ",robot.motorLiftRear.getCurrentPosition());
+            telemetry.addData("Lift velocity front:",robot.motorLiftFront.getVelocity());
+            telemetry.addData("Lift velocity rear:",robot.motorLiftRear.getVelocity());
             telemetry.addData("Lift power = ",liftPower);
             telemetry.addData("Claw open = ", clawToggle);
             telemetry.addData("Current tip = ",tip);

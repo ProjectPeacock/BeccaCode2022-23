@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -17,10 +19,16 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 @Autonomous(name = "Blue Preload Auto", group = "Competition")
 public class BluePreloadAuto extends LinearOpMode {
+    FtcDashboard dashboard;
+    TelemetryPacket dashTelemetry = new TelemetryPacket();
+    public static double preloadX = 28.5;
+    public static double preloadY = -31;
+    private String configFile="autoGyroValue.txt";
     /*
 
     OPMODE MAP - PLEASE READ BEFORE EDITING
@@ -60,6 +68,9 @@ public class BluePreloadAuto extends LinearOpMode {
         initVuforia();
         initTfod();
         robot.init(hardwareMap);
+        dashboard = FtcDashboard.getInstance();
+        TelemetryPacket dashTelemetry = new TelemetryPacket();
+
 
         if (tfod != null) {
             tfod.activate();
@@ -70,7 +81,7 @@ public class BluePreloadAuto extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1.0, 16.0/9.0);
+            tfod.setZoom(1.5, 16.0/9.0);
         }
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -81,11 +92,14 @@ public class BluePreloadAuto extends LinearOpMode {
         TrajectorySequence park = drive.trajectorySequenceBuilder(startPose)
             //close claw to grab preload
             .UNSTABLE_addTemporalMarkerOffset(0, clawControl::closeClaw)
+                .waitSeconds(0.35)
                 .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2);})
-                .splineTo(new Vector2d(28.5,-30),Math.toRadians(120))
-                //.UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(1);})
-                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::openClaw)
-                .waitSeconds(0.25)
+                .splineTo(new Vector2d(preloadX,preloadY),Math.toRadians(120))
+
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{clawControl.moveLiftScore(2,75);})
+                .UNSTABLE_addTemporalMarkerOffset(0.35, clawControl::openClaw)
+                .waitSeconds(0.35)
+                .UNSTABLE_addTemporalMarkerOffset(0, clawControl::disableClaw)
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-0.125,()->{clawControl.moveLiftScore(0);})
                 .strafeRight(6)
@@ -103,8 +117,8 @@ public class BluePreloadAuto extends LinearOpMode {
                 .waitSeconds(0.25)
                 .build();
 
-//        robot.autoLight.set(1);
         while(!isStopRequested() && !opModeIsActive()) {
+            robot.autoLight.set(-1);
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -138,6 +152,21 @@ public class BluePreloadAuto extends LinearOpMode {
         }  // end of while
 
         waitForStart();
+
+        dashTelemetry.put("01 - IMU Angle X = ", robot.imu.getAngles()[0]);
+        dashTelemetry.put("02 - IMU Angle Y = ", robot.imu.getAngles()[1]);
+        dashTelemetry.put("03 - IMU Angle Z = ", robot.imu.getAngles()[2]);
+        dashTelemetry.put("04 - Lift Front Encoder Value = ", robot.motorLiftFront.getCurrentPosition());
+        dashTelemetry.put("05 - Lift Rear Encoder Value = ", robot.motorLiftRear.getCurrentPosition());
+        dashTelemetry.put("06 - Claw Value = ", robot.servoGrabber.getPosition());
+        dashTelemetry.put("07 - GP1.Button.A = ", "RESET LIFT");
+        dashTelemetry.put("08 - GP1.Button.B = ", "LIFT LOW JUNCTION");
+        dashTelemetry.put("09 - GP1.Button.X = ", "LIFT MID JUNCTION");
+        dashTelemetry.put("10 - GP1.Button.Y = ", "LIFT HIGH JUNCTION");
+        dashTelemetry.put("11 - GP2.Button.A = ", "Custom Position - program stack cone levels");
+        dashboard.sendTelemetryPacket(dashTelemetry);
+
+
         robot.autoLight.set(0);
         if(isStopRequested()) return;
 
@@ -149,8 +178,8 @@ public class BluePreloadAuto extends LinearOpMode {
         }else if(parkPosition==3){
             drive.followTrajectorySequence(park3);
         }
-
-
+        telemetry.addData("heading:",robot.imu.getHeading());
+        telemetry.update();
     }
     private void initVuforia() {
         /*
@@ -173,7 +202,7 @@ public class BluePreloadAuto extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.6f;
+        tfodParameters.minResultConfidence = 0.7f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

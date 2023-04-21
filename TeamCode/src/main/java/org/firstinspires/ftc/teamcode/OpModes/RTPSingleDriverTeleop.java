@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Libs.LiftControlClass;
 
 import java.util.List;
 
-@TeleOp(name = "RTP Single Driver Teleop Mode", group = "Competition")
-@Disabled
+@TeleOp(name = "RTP Single Driver Teleop", group = "Competition")
+//@Disabled
 public class RTPSingleDriverTeleop extends LinearOpMode {
     private final static HWProfile robot = new HWProfile();
 
@@ -39,7 +39,9 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
         boolean clawToggle=false, clawReady=false, slowToggle=false, slowReady=false;
         boolean antiTip=true;
         double forwardPower=0, strafePower=0, liftPower=.5;
+
         int liftPos=0;
+
 
         waitForStart();
         double startTilt=robot.imu.getAngles()[robot.ANTI_TIP_AXIS], currentTilt=0, tip=0;
@@ -96,18 +98,21 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
             if(aReader.isDown()&&clawReady){
                 clawToggle=!clawToggle;
             }
+
             //forces claw to only open or close if button is pressed once, not held
             if(!aReader.isDown()){
                 clawReady=true;
             }else{
                 clawReady=false;
             }
+
             //apply value to claw
             if (clawToggle) {
                 lift.openClaw();
             } else {
                 lift.closeClaw();
             }
+
 
             if (gp1.getButton(GamepadKeys.Button.B)){
                 liftPos= robot.LIFT_LOW;
@@ -123,6 +128,9 @@ public class RTPSingleDriverTeleop extends LinearOpMode {
                 liftPos+= robot.liftAdjust;
             }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.15){
                 liftPos-= robot.liftAdjust;
+            }
+            if(liftPos<0){
+                liftPos=0;
             }
 
             lift.runTo(liftPos);
