@@ -37,7 +37,7 @@ public class HWProfile {
 
     //claw positions
     public final double CLAW_OPEN =0.2;
-    public final double CLAW_CLOSE =0.535;
+    public final double CLAW_CLOSE =0.58;
     public final double CLAW_BEACON=0.4;
 
 
